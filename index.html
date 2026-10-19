@@ -47,6 +47,60 @@
     .difficulty.completed { border-color:#b8d8c1; background:#f0f8f1; }
     .difficulty.active { border-color:#c5a56d; background:#f8f3e8; }
     .menu-foot { margin:2px 0 0; color:var(--muted); font-size:.8rem; }
+    .menu-help { width:100%; margin-top:8px; padding:8px; border:0; background:transparent; color:var(--muted); font-weight:750; cursor:pointer; }
+    .menu-help:hover { color:var(--ink); text-decoration:underline; }
+    .guide-backdrop { z-index:30; }
+    .guide-dialog { width:min(100%,760px); max-height:calc(100vh - 32px); overflow:auto; padding:clamp(20px,4vw,34px); text-align:left; }
+    .guide-header { display:flex; justify-content:space-between; align-items:flex-start; gap:18px; }
+    .guide-header .eyebrow { margin-bottom:6px; }
+    .guide-close { flex:none; width:38px; height:38px; border:1px solid var(--line); border-radius:50%; background:#fff; cursor:pointer; }
+    .guide-tabs { display:flex; gap:8px; margin:20px 0 18px; padding-bottom:10px; border-bottom:1px solid var(--line); }
+    .guide-tab { padding:8px 13px; border:1px solid var(--line); border-radius:999px; background:#fff; color:var(--muted); font-size:.86rem; font-weight:800; cursor:pointer; }
+    .guide-tab[aria-selected="true"] { border-color:#c5a56d; background:#f7f1e4; color:#705a31; }
+    .guide-panel h3 { margin:0 0 5px; color:#263143; font-size:1rem; }
+    .guide-panel p { margin:0; color:var(--muted); font-size:.9rem; }
+    .howto-cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+    .howto-card { min-width:0; padding:13px; border:1px solid var(--line); border-radius:16px; background:#fff; }
+    .howto-visual { display:flex; min-height:93px; align-items:center; justify-content:center; gap:8px; margin-bottom:11px; border-radius:12px; background:#edf0f5; color:#273044; }
+    .demo-buddy { display:grid; place-items:center; width:31px; height:31px; border:4px solid #6387db; border-radius:50%; background:#e4ebfc; color:#253047; font-size:9px; font-weight:900; }
+    .demo-arrow { color:#667085; font-size:1.25rem; font-weight:900; }
+    .demo-box { display:block; width:25px; height:25px; border-radius:5px; background:#c5a56d; box-shadow:inset 0 -4px #cc9147; }
+    .demo-star { color:#d5a43b; font-size:1.45rem; }
+    .demo-keys { display:grid; grid-template-columns:repeat(3,23px); grid-template-rows:repeat(2,20px); gap:3px; }
+    .demo-keys span { display:grid; place-items:center; border:1px solid #d9deea; border-radius:5px; background:#fff; color:#596579; font-size:10px; font-weight:800; }
+    .demo-keys span:first-child { grid-column:2; }
+    .demo-keys span:nth-child(2) { grid-column:1; grid-row:2; }
+    .demo-keys span:nth-child(3) { grid-column:2; grid-row:2; }
+    .demo-keys span:nth-child(4) { grid-column:3; grid-row:2; }
+    .demo-hazard { display:grid; place-items:center; min-width:27px; height:27px; border-radius:7px; background:#f0eafb; color:#8662c3; font-weight:900; }
+    .demo-gate { background:#bd9a62; color:#fff8e8; }
+    .demo-moving { background:#c56d72; color:#fff; }
+    .guide-note { margin-top:12px !important; padding:10px 12px; border-radius:12px; background:#f4f6fa; }
+    .tutorial-intro { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:15px; }
+    .tutorial-step-count { color:#9a7c47; font-size:.76rem; font-weight:850; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; }
+    .tutorial-step { display:grid; grid-template-columns:minmax(150px,.7fr) minmax(0,1.3fr); align-items:center; gap:18px; min-height:170px; }
+    .tutorial-art { display:grid; place-items:center; min-height:145px; border:1px solid #e4e8ef; border-radius:17px; background:radial-gradient(circle at 50% 40%,#fff,#edf0f5 80%); }
+    .tutorial-art .howto-visual { width:calc(100% - 18px); margin:9px; }
+    .tutorial-practice { display:grid; grid-template-columns:minmax(150px,.8fr) minmax(0,1.2fr); align-items:center; gap:18px; }
+    .tutorial-board { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); grid-template-rows:repeat(5,minmax(0,1fr)); gap:5px; width:min(100%,230px); aspect-ratio:1; padding:8px; border:1px solid #dfe4ed; border-radius:15px; background:#e9edf4; }
+    .tutorial-cell { display:grid; min-width:0; min-height:0; place-items:center; overflow:hidden; border-radius:6px; background:#fafbfc; }
+    .tutorial-cell.tutorial-edge { background:#46536a; }
+    .tutorial-cell.tutorial-target { color:#78ad87; font-size:.82rem; line-height:1; }
+    .tutorial-buddy-token { display:grid; place-items:center; width:70%; height:70%; border:3px solid #6387db; border-radius:50%; background:#e4ebfc; color:#253047; font-size:clamp(7px,2vw,10px); font-weight:900; }
+    .tutorial-box-token { width:68%; height:68%; border-radius:5px; background:#c5a56d; box-shadow:inset 0 -3px #cc9147; }
+    .tutorial-practice-copy { display:grid; gap:10px; }
+    .tutorial-controls { display:grid; grid-template-columns:repeat(3,48px); grid-template-rows:repeat(2,46px); gap:5px; width:max-content; touch-action:manipulation; }
+    .tutorial-controls button { padding:0; border:1px solid var(--line); border-radius:11px; background:#fff; color:#354054; font-size:1.2rem; font-weight:850; cursor:pointer; box-shadow:0 2px 0 #dfe3ea; }
+    .tutorial-controls button:active { transform:translateY(1px); box-shadow:0 1px 0 #dfe3ea; }
+    .tutorial-controls button:first-child { grid-column:2; }
+    .tutorial-controls button:nth-child(2) { grid-column:1; grid-row:2; }
+    .tutorial-controls button:nth-child(3) { grid-column:2; grid-row:2; }
+    .tutorial-controls button:nth-child(4) { grid-column:3; grid-row:2; }
+    .tutorial-demo-status { min-height:1.4em; color:#4c6c58 !important; font-weight:750; }
+    .tutorial-demo-reset { width:max-content; padding:6px 10px; border:1px solid var(--line); border-radius:9px; background:#fff; font-size:.8rem; font-weight:750; cursor:pointer; }
+    .tutorial-actions { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:16px; padding-top:13px; border-top:1px solid var(--line); }
+    .tutorial-actions-right { display:flex; gap:8px; }
+    @media (max-width:620px) { .howto-cards { grid-template-columns:1fr; } .howto-visual { min-height:68px; margin-bottom:8px; } .tutorial-step,.tutorial-practice { grid-template-columns:1fr; gap:10px; } .tutorial-art { min-height:100px; } .tutorial-practice { justify-items:center; } .tutorial-practice-copy { justify-items:center; text-align:center; } .tutorial-actions { flex-wrap:wrap; } }
     .menu-customize-card { display:flex; width:100%; align-items:center; gap:12px; margin:13px 0 10px; padding:12px 14px; border:1px solid #e5dcc8; border-radius:16px; background:linear-gradient(110deg,#fffefa,#f3efe5); text-align:left; cursor:pointer; transition:transform .18s,border-color .18s,box-shadow .18s; }
     .menu-customize-card:hover { transform:translateY(-1px); border-color:#c5a56d; box-shadow:0 8px 22px #88714512; }
     .player.menu-buddy-preview { flex:none; width:38px; height:38px; border-width:3px; }
@@ -161,8 +215,9 @@
     .action.primary { background:var(--blue); color:#fff; }
     .action.primary:hover { background:#5276c9; }
     .action:focus-visible,.difficulty:focus-visible { outline:3px solid #94aefa; outline-offset:2px; }
-    .mobile-controls { display:grid; grid-template-columns:repeat(3,46px); grid-template-rows:repeat(2,40px); gap:5px; justify-content:center; margin:13px auto 0; }
-    .mobile-controls button { padding:0; font-size:1.15rem; }
+    .mobile-controls { display:grid; grid-template-columns:repeat(3,48px); grid-template-rows:repeat(2,44px); gap:5px; justify-content:center; margin:10px auto 0; padding:8px 12px 10px; border:1px solid #e7eaf0; border-radius:16px; background:linear-gradient(145deg,#fafbfc,#f0f2f6); touch-action:manipulation; user-select:none; -webkit-tap-highlight-color:transparent; }
+    .mobile-controls button { min-width:44px; min-height:44px; padding:0; border:1px solid #e0e4eb; border-radius:12px; background:#fff; color:#394457; font-size:1.2rem; font-weight:850; box-shadow:0 2px 0 #e5e8ed; }
+    .mobile-controls button:active { transform:translateY(1px); background:#f5f0e5; box-shadow:0 1px 0 #e5e8ed; }
     .mobile-controls button:nth-child(1) { grid-column:2; }
     .mobile-controls button:nth-child(2) { grid-column:1; grid-row:2; }
     .mobile-controls button:nth-child(3) { grid-column:2; grid-row:2; }
@@ -175,7 +230,16 @@
     @keyframes star-pop { 45% { transform:scale(1.55) rotate(20deg); } }
     @keyframes confetti-fall { 0% { opacity:0; transform:translateY(0) rotate(0); } 15% { opacity:1; } 100% { opacity:0; transform:translateY(115px) rotate(240deg); } }
     @keyframes menu-confetti-fall { 0% { opacity:0; transform:translateY(0) rotate(0); } 12% { opacity:1; } 100% { opacity:0; transform:translateY(430px) rotate(520deg); } }
-    @media (min-width:600px) { .mobile-controls { display:none; } }
+    @media (max-width:599px) {
+      .card { padding:12px; border-radius:20px; }
+      .board-wrap { width:min(100%,390px,44dvh); }
+      .level-top { margin-bottom:6px; }
+      .course-nav { margin-bottom:5px; }
+      .record { margin-bottom:7px; }
+      .mobile-controls { margin-top:7px; }
+      .hint { margin-top:8px; }
+    }
+    @media (hover:hover) and (pointer:fine) { .mobile-controls { display:none; } }
     @media (max-width:380px) { .menu-dialog { padding:22px 17px; } .difficulty { min-height:58px; } }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
   </style>
@@ -205,6 +269,62 @@
         <span class="menu-garage-arrow" aria-hidden="true">↗</span>
       </button>
       <button id="menu-continue" class="action" type="button" hidden>Continue current puzzle</button>
+      <button id="menu-help" class="menu-help" type="button">? &nbsp; How to play</button>
+      <button id="menu-tutorial" class="menu-help" type="button">▶ &nbsp; Try the tutorial</button>
+    </section>
+  </div>
+  <div id="guide-menu" class="menu-backdrop guide-backdrop" hidden>
+    <section class="menu-dialog guide-dialog" role="dialog" aria-modal="true" aria-labelledby="guide-title">
+      <div class="guide-header">
+        <div><p class="eyebrow">Block Buddy guide</p><h2 id="guide-title">How to play</h2></div>
+        <button id="guide-close" class="guide-close" type="button" aria-label="Close guide">×</button>
+      </div>
+      <div id="guide-instructions" class="guide-panel" aria-labelledby="guide-title">
+        <div class="howto-cards">
+          <article class="howto-card">
+            <div class="howto-visual" aria-hidden="true"><div class="demo-keys"><span>↑</span><span>←</span><span>↓</span><span>→</span></div><span class="demo-buddy">•ᴗ•</span></div>
+            <h3>Move your buddy</h3><p>Use arrow keys, W A S D, or the on-screen arrows.</p>
+          </article>
+          <article class="howto-card">
+            <div class="howto-visual" aria-hidden="true"><span class="demo-buddy">•ᴗ•</span><span class="demo-arrow">→</span><span class="demo-box"></span><span class="demo-arrow">→</span><span class="demo-star">★</span></div>
+            <h3>Push the block</h3><p>Get behind it and push it onto the star. You can’t pull it.</p>
+          </article>
+          <article class="howto-card">
+            <div class="howto-visual" aria-hidden="true"><span class="demo-hazard">✦</span><span class="demo-arrow">→</span><span class="demo-hazard demo-gate">▥</span><span class="demo-arrow">·</span><span class="demo-hazard demo-moving">↔</span></div>
+            <h3>Watch the board</h3><p>Switches open gates. Red walls move after each turn. Plan before pushing.</p>
+          </article>
+        </div>
+        <p class="guide-note">Solve in as few moves as you can. Start over is always available while a course is in progress.</p>
+        <button id="tutorial-return" class="action" type="button" hidden>Back to tutorial</button>
+      </div>
+      <div id="guide-tutorial" class="guide-panel" aria-labelledby="guide-title" hidden>
+        <div class="tutorial-intro"><p id="tutorial-step-count" class="tutorial-step-count">Step 1 of 4</p><p>Learn the basics, then try a tiny puzzle.</p></div>
+        <div class="tutorial-step" data-tutorial-step="0">
+          <div class="tutorial-art" aria-hidden="true"><div class="howto-visual"><div class="demo-keys"><span>W</span><span>A</span><span>S</span><span>D</span></div><span class="demo-buddy">•ᴗ•</span></div></div>
+          <div><h3>Move one square at a time</h3><p>Use arrow keys or W A S D on a keyboard. On a phone or tablet, tap the on-screen arrow pad below the board.</p></div>
+        </div>
+        <div class="tutorial-step" data-tutorial-step="1" hidden>
+          <div class="tutorial-art" aria-hidden="true"><div class="howto-visual"><span class="demo-buddy">•ᴗ•</span><span class="demo-arrow">→</span><span class="demo-box"></span><span class="demo-arrow">→</span><span class="demo-star">★</span></div></div>
+          <div><h3>Push, don’t pull</h3><p>Stand behind the block and move toward it to push. If it reaches a wall or a corner, you may need to start over.</p></div>
+        </div>
+        <div class="tutorial-step" data-tutorial-step="2" hidden>
+          <div class="tutorial-art" aria-hidden="true"><div class="howto-visual"><span class="demo-hazard">✦</span><span class="demo-arrow">→</span><span class="demo-hazard demo-gate">▥</span><span class="demo-arrow">·</span><span class="demo-hazard demo-moving">↔</span></div></div>
+          <div><h3>Use the course mechanics</h3><p>Touch a ✦ switch to open its gate. Red ↔ walls shift each turn; they pause if you or the block are in their next spot.</p></div>
+        </div>
+        <div class="tutorial-step" data-tutorial-step="3" hidden>
+          <div class="tutorial-practice">
+            <div id="tutorial-board" class="tutorial-board" role="grid" aria-label="Mini practice puzzle"></div>
+            <div class="tutorial-practice-copy"><div><h3>Your turn</h3><p>Push the block one square right onto the star. Try the arrows or press → on your keyboard.</p></div>
+              <div class="tutorial-controls" role="group" aria-label="Tap these arrows to move your buddy">
+                <button type="button" data-tutorial-dir="up" aria-label="Practice move up">↑</button><button type="button" data-tutorial-dir="left" aria-label="Practice move left">←</button><button type="button" data-tutorial-dir="down" aria-label="Practice move down">↓</button><button type="button" data-tutorial-dir="right" aria-label="Practice move right">→</button>
+              </div>
+              <p id="tutorial-demo-status" class="tutorial-demo-status" aria-live="polite">Moves: 0 · Push the block to the star.</p>
+              <button id="tutorial-demo-reset" class="tutorial-demo-reset" type="button">↻ Try again</button>
+            </div>
+          </div>
+        </div>
+        <div class="tutorial-actions"><button id="tutorial-instructions" class="action" type="button">How to play</button><div class="tutorial-actions-right"><button id="tutorial-prev" class="action" type="button">← Back</button><button id="tutorial-next" class="action primary" type="button">Next →</button></div></div>
+      </div>
     </section>
   </div>
   <div id="shop-menu" class="menu-backdrop" hidden>
@@ -246,7 +366,7 @@
         <button id="play-again" class="action primary" type="button" hidden>↻ Play this course again</button>
         <button id="reset" class="action" type="button">↻ Start over</button>
       </div>
-      <div class="mobile-controls" aria-label="Move controls">
+      <div class="mobile-controls" role="group" aria-label="Move controls">
         <button class="action" type="button" data-dir="up" aria-label="Move up">↑</button>
         <button class="action" type="button" data-dir="left" aria-label="Move left">←</button>
         <button class="action" type="button" data-dir="down" aria-label="Move down">↓</button>
@@ -325,8 +445,11 @@
     const coursePosition=document.querySelector("#course-position"),coursePrev=document.querySelector("#course-prev"),courseNext=document.querySelector("#course-next");
     const replayButton=document.querySelector("#replay"),playAgainButton=document.querySelector("#play-again");
     const menuTitle=document.querySelector("#menu-title"),menuCopy=document.querySelector("#menu-copy");
+    const guideMenu=document.querySelector("#guide-menu");
+    const guideInstructions=document.querySelector("#guide-instructions"),guideTutorial=document.querySelector("#guide-tutorial"),tutorialBoard=document.querySelector("#tutorial-board"),tutorialDemoStatus=document.querySelector("#tutorial-demo-status");
     const shopMenu=document.querySelector("#shop-menu"),shopCategories=document.querySelector("#shop-categories"),shopPreview=document.querySelector("#shop-preview-buddy"),shopStreak=document.querySelector("#shop-streak");
     let buddyStyle=loadBuddyStyle(),shopReturnFocus=null;
+    let guideReturnToMenu=false,guideTab="instructions",tutorialStep=0,tutorialMoves=0,tutorialWon=false,tutorialRequired=getSaved("blockBuddyTutorialSeen")!=="true",tutorialPlayer={x:1,y:2},tutorialBox={x:2,y:2};
     let levelIndex=0,level,player,box,moves,won,fastestMoves,hasStarted=false,gateOpen=false,movingTrack=null,movingPhase=0,dailyState=null,practiceMode=false,reviewMode=false,reviewSnapshot=null,moveHistory=[],historyComplete=true,replayTimer=null,replayTrailActive=false,replayPlayerTrail=new Set(),replayBoxTrail=new Set();
     function getSaved(key) { try { return localStorage.getItem(key); } catch { return null; } }
     function saveValue(key,value) { try { localStorage.setItem(key,value); return true; } catch { return false; } }
@@ -676,6 +799,64 @@
       try { return JSON.parse(getSaved("blockBuddyCompleted")||"[]").filter(n=>Number.isInteger(n)&&n>=0&&n<4); }
       catch { return []; }
     }
+    function resetTutorialPuzzle() {
+      tutorialPlayer={x:1,y:2};tutorialBox={x:2,y:2};tutorialMoves=0;tutorialWon=false;
+      renderTutorialPuzzle();
+    }
+    function renderTutorialPuzzle() {
+      if(!tutorialBoard)return;
+      tutorialBoard.replaceChildren();
+      for(let y=0;y<5;y++)for(let x=0;x<5;x++){
+        const cell=document.createElement("div");cell.className="tutorial-cell";cell.setAttribute("role","gridcell");
+        if(x===0||x===4||y===0||y===4)cell.classList.add("tutorial-edge");
+        if(x===3&&y===2){cell.classList.add("tutorial-target");cell.textContent="★";}
+        if(tutorialBox.x===x&&tutorialBox.y===y){const block=document.createElement("span");block.className="tutorial-box-token";block.setAttribute("aria-label","block");cell.append(block);}
+        if(tutorialPlayer.x===x&&tutorialPlayer.y===y){const buddy=document.createElement("span");buddy.className="tutorial-buddy-token";buddy.textContent="•ᴗ•";buddy.setAttribute("aria-label","your buddy");cell.append(buddy);}
+        tutorialBoard.append(cell);
+      }
+      tutorialDemoStatus.textContent=tutorialWon?`Solved in ${tutorialMoves} ${tutorialMoves===1?"move":"moves"}! Nice push.`:`Moves: ${tutorialMoves} · Push the block to the star.`;
+    }
+    function moveTutorial(dx,dy) {
+      if(tutorialWon)return;
+      const nx=tutorialPlayer.x+dx,ny=tutorialPlayer.y+dy;
+      if(nx<1||nx>3||ny<1||ny>3)return;
+      let bx=tutorialBox.x,by=tutorialBox.y;
+      if(nx===bx&&ny===by){bx+=dx;by+=dy;if(bx<1||bx>3||by<1||by>3)return;tutorialBox={x:bx,y:by};}
+      tutorialPlayer={x:nx,y:ny};tutorialMoves++;
+      tutorialWon=tutorialBox.x===3&&tutorialBox.y===2;
+      renderTutorialPuzzle();
+      if(tutorialWon)document.querySelector("#tutorial-next").disabled=false;
+    }
+    function renderTutorialStep() {
+      document.querySelectorAll("[data-tutorial-step]").forEach(step=>{step.hidden=Number(step.dataset.tutorialStep)!==tutorialStep;});
+      document.querySelector("#tutorial-step-count").textContent=`Step ${tutorialStep+1} of 4`;
+      document.querySelector("#tutorial-prev").disabled=tutorialStep===0;
+      document.querySelector("#tutorial-next").textContent=tutorialStep===3?"Finish":"Next →";
+      document.querySelector("#tutorial-next").disabled=tutorialStep===3&&tutorialRequired&&!tutorialWon;
+      if(tutorialStep===3)renderTutorialPuzzle();
+    }
+    function setGuideTab(tab) {
+      guideTab=tab;
+      const tutorial=tab==="tutorial";
+      guideInstructions.hidden=tutorial;guideTutorial.hidden=!tutorial;
+      document.querySelector("#tutorial-return").hidden=tutorial||!tutorialRequired;
+      document.querySelector("#guide-close").hidden=tutorialRequired;
+      if(tutorial){tutorialStep=0;resetTutorialPuzzle();renderTutorialStep();}
+    }
+    function openGuide(tab="instructions",returnToMenu=true) {
+      stopReplay(false);guideReturnToMenu=returnToMenu;
+      if(returnToMenu)levelMenu.hidden=true;
+      guideMenu.hidden=false;setGuideTab(tab);
+      document.querySelector("#guide-close").focus();
+    }
+    function closeGuide() {
+      if(tutorialRequired&&!(guideTab==="tutorial"&&tutorialStep===3&&tutorialWon))return;
+      const returnToMenu=guideReturnToMenu;
+      guideMenu.hidden=true;tutorialRequired=false;saveValue("blockBuddyTutorialSeen","true");
+      if(returnToMenu)levelMenu.hidden=false;
+      guideReturnToMenu=false;
+      document.querySelector(!levelMenu.hidden?"#menu-help":"#menu-open").focus();
+    }
     function showDifficultyPicker(completedNow=null) {
       if(dailyState?.date!==localDateKey())dailyState=null;
       const active=dailyState,finalCourse=completedNow!==null;
@@ -748,6 +929,12 @@
     updateSoundButton();
     const directions={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]};
     addEventListener("keydown",event=>{
+      if(!guideMenu.hidden){
+        if(event.key==="Escape"){closeGuide();return;}
+        const direction=directions[event.key]||directions[event.key.toLowerCase()];
+        if(guideTab==="tutorial"&&tutorialStep===3&&direction){event.preventDefault();moveTutorial(...direction);}
+        return;
+      }
       if(!shopMenu.hidden){if(event.key==="Escape")closeShop();return;}
       if (!levelMenu.hidden) { if (event.key==="Escape"&&hasStarted&&(!dailyState?.completed||reviewMode||practiceMode)) closeMenu(); return; }
       if (event.key.toLowerCase()==="r") { if((!dailyState?.completed||practiceMode)&&!reviewMode)startOver(); return; }
@@ -762,6 +949,18 @@
     replayButton.addEventListener("click",replayPath);
     soundButton.addEventListener("click",()=>{ soundOn=!soundOn; saveValue("blockBuddySound",soundOn?"on":"off"); updateSoundButton(); if(soundOn) playTone(523,.1); });
     document.querySelector("#menu-open").addEventListener("click",openMenu);
+    document.querySelector("#menu-help").addEventListener("click",()=>openGuide("instructions"));
+    document.querySelector("#menu-tutorial").addEventListener("click",()=>openGuide("tutorial"));
+    document.querySelector("#guide-close").addEventListener("click",closeGuide);
+    document.querySelector("#tutorial-instructions").addEventListener("click",()=>setGuideTab("instructions"));
+    document.querySelector("#tutorial-return").addEventListener("click",()=>setGuideTab("tutorial"));
+    document.querySelector("#tutorial-prev").addEventListener("click",()=>{if(tutorialStep>0){tutorialStep--;renderTutorialStep();}});
+    document.querySelector("#tutorial-next").addEventListener("click",()=>{if(tutorialStep<3){tutorialStep++;renderTutorialStep();}else closeGuide();});
+    document.querySelector("#tutorial-demo-reset").addEventListener("click",resetTutorialPuzzle);
+    document.querySelectorAll("[data-tutorial-dir]").forEach(button=>button.addEventListener("click",()=>{
+      if(guideTab!=="tutorial"||tutorialStep!==3)return;
+      const dirs={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};moveTutorial(...dirs[button.dataset.tutorialDir]);
+    }));
     document.querySelector("#shop-open").addEventListener("click",openShop);
     document.querySelector("#menu-shop").addEventListener("click",openShop);
     document.querySelector("#shop-close").addEventListener("click",closeShop);
@@ -779,6 +978,7 @@
       practiceMode=true;reviewMode=false;reviewSnapshot=null;start();levelMenu.hidden=true;
     });
     start();
+    if(tutorialRequired)openGuide("tutorial",false);
   </script>
 </body>
 </html>
