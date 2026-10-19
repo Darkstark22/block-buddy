@@ -121,7 +121,7 @@
     .course-nav button:disabled { opacity:.35; cursor:default; }
     .course-nav span { color:var(--muted); font-size:.82rem; font-weight:750; }
     .level-name { text-align:left; font-weight:800; }
-    .move-count { color:var(--muted); font-size:.9rem; white-space:nowrap; }
+    .move-count { color:var(--ink); font-size:1.05rem; font-weight:850; white-space:nowrap; }
     .record { min-height:1.4em; margin:0 0 12px; color:var(--muted); font-size:.86rem; }
     .board-wrap { position:relative; width:min(100%,390px); margin:auto; }
     .board {
@@ -235,7 +235,7 @@
     <section class="card" aria-label="Block Buddy game">
       <div class="level-top"><span id="level-name" class="level-name">Easy</span><span id="moves" class="move-count">Moves: 0</span></div>
       <div class="course-nav" aria-label="Browse courses"><button id="course-prev" type="button" aria-label="Previous course">←</button><span id="course-position">Course 1 of 5</span><button id="course-next" type="button" aria-label="Next course">→</button></div>
-      <p id="record" class="record">Fastest: calculating… · Your score: 0 moves</p>
+      <p id="record" class="record">Fastest: calculating…</p>
       <div class="board-wrap">
         <div id="board" class="board" role="grid" aria-label="Puzzle board"></div>
         <div id="celebration" class="celebration" aria-hidden="true"></div>
@@ -283,7 +283,7 @@
       if(difficulty===2){
         const hardWalls=[
           [[2,2],[3,2],[5,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[4,6],[5,6],[6,6]],
-          [[2,2],[4,2],[5,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[3,6],[5,6],[6,6]],
+          [[2,2],[4,2],[5,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[5,6],[6,6]],
           [[2,2],[3,2],[4,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[3,6],[4,6],[6,6]],
           [[2,2],[3,2],[5,2],[2,3],[6,3],[2,5],[2,6],[3,6],[4,6],[5,6]],
           [[2,2],[4,2],[5,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[3,6],[4,6],[6,6]]
@@ -548,7 +548,7 @@
       }
       board.classList.toggle("is-won",won); board.classList.toggle("box-pushed",pushed);
       movesLabel.textContent=`Moves: ${moves}`;
-      record.textContent=`Fastest: ${fastestMoves??"—"} moves · Your score: ${moves} moves`;
+      record.textContent=`Fastest: ${fastestMoves??"—"} moves`;
     }
     function applyMoveState(step,trace=false) {
       player={...step.player};box={...step.box};moves=Number(step.moves)||0;gateOpen=!!step.gateOpen;movingPhase=Number(step.movingPhase)||0;
@@ -589,7 +589,7 @@
       levelName.textContent=`${entry.name}${practiceMode?" · Practice":""}`;
       coursePosition.textContent=`${entry.course+1} / 5`;
       coursePrev.disabled=entry.course===0;courseNext.disabled=entry.course===4;
-      record.textContent=`Fastest: ${fastestMoves ?? "—"} moves · Your score: ${moves} moves`;
+      record.textContent=`Fastest: ${fastestMoves ?? "—"} moves`;
       status.textContent=reviewMode?"Completed course — read-only review.":practiceMode?"Practice run — your saved daily result stays safe.":"Ready when you are!"; status.classList.toggle("win",reviewMode);
       resetButton.disabled=reviewMode;document.querySelector("#celebration").replaceChildren();
       if(dailyState?.completed&&!practiceMode&&!reviewMode&&dailyState.difficulty===entry.difficulty&&dailyState.course===entry.course){moves=Number(dailyState.moves)||0;player={...dailyState.player};box={...dailyState.box};gateOpen=!!dailyState.gateOpen;movingPhase=Number(dailyState.movingPhase)||0;won=true;status.textContent="Today's course is already complete. Come back tomorrow for the next one.";status.classList.add("win");resetButton.disabled=true;}
