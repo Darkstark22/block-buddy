@@ -28,7 +28,9 @@
     .icon-button:hover { background:#f0f2f6; }
     .icon-button:focus-visible { outline:3px solid #94aefa; outline-offset:2px; }
     .menu-backdrop { position:fixed; z-index:15; inset:0; display:grid; place-items:center; overflow:auto; padding:20px; background:#27304472; backdrop-filter:blur(5px); }
-    .menu-dialog { width:min(100%,455px); max-height:calc(100vh - 40px); overflow:auto; padding:30px; border:1px solid #e7dfcf; border-radius:25px; background:linear-gradient(145deg,#fffefa,#f8f6ef); box-shadow:0 28px 90px #11182755; text-align:center; animation:menu-in .22s ease-out; }
+    .menu-dialog { position:relative; width:min(100%,455px); max-height:calc(100vh - 40px); overflow:hidden; padding:30px; border:1px solid #e7dfcf; border-radius:25px; background:linear-gradient(145deg,#fffefa,#f8f6ef); box-shadow:0 28px 90px #11182755; text-align:center; animation:menu-in .22s ease-out; }
+    .menu-confetti { position:absolute; z-index:2; inset:0; overflow:hidden; pointer-events:none; }
+    .menu-confetti span { position:absolute; top:-12px; left:var(--x); width:7px; height:10px; border-radius:2px; background:hsl(var(--h) 72% 60%); animation:menu-confetti-fall 1.7s ease-out var(--d) forwards; }
     .menu-dialog h2 { margin:0; color:#263143; font-family:Georgia,"Times New Roman",serif; font-size:2rem; font-weight:500; letter-spacing:-.045em; }
     .menu-dialog .eyebrow { color:#987b49; }
     .menu-copy { margin:8px 0 19px; color:var(--muted); font-size:.91rem; }
@@ -105,6 +107,7 @@
     @keyframes menu-in { from { opacity:0; transform:translateY(8px) scale(.98); } to { opacity:1; transform:translateY(0) scale(1); } }
     @keyframes star-pop { 45% { transform:scale(1.55) rotate(20deg); } }
     @keyframes confetti-fall { 0% { opacity:0; transform:translateY(0) rotate(0); } 15% { opacity:1; } 100% { opacity:0; transform:translateY(115px) rotate(240deg); } }
+    @keyframes menu-confetti-fall { 0% { opacity:0; transform:translateY(0) rotate(0); } 12% { opacity:1; } 100% { opacity:0; transform:translateY(430px) rotate(520deg); } }
     @media (min-width:600px) { .mobile-controls { display:none; } }
     @media (max-width:380px) { .menu-dialog { padding:22px 17px; } .difficulty { min-height:58px; } }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
@@ -117,6 +120,7 @@
   </div>
   <div id="level-menu" class="menu-backdrop">
     <section class="menu-dialog" role="dialog" aria-modal="true" aria-labelledby="menu-title">
+      <div id="menu-confetti" class="menu-confetti" aria-hidden="true"></div>
       <p class="eyebrow">Welcome back</p>
       <h2 id="menu-title">Choose your puzzle</h2>
       <p id="menu-copy" class="menu-copy">Choose a difficulty for today's puzzle. Each course can be solved once.</p>
@@ -230,7 +234,13 @@
       return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
     }
     function readTodayDaily() {
-      try { const saved=JSON.parse(getSaved("blockBuddyDaily")||"null"); return saved?.date===localDateKey()?saved:null; }
+      try {
+        const saved=JSON.parse(getSaved("blockBuddyDaily")||"null");
+        if(saved?.date!==localDateKey())return null;
+        // Older builds marked each single course as the whole daily puzzle. Resume at the next course.
+        if(saved.completed&&saved.course<4){const next=nextUnfinishedCourse(saved.difficulty);if(next>=0)return {...saved,course:next,completed:false,moves:0,player:null,box:null,history:null};}
+        return saved;
+      }
       catch { return null; }
     }
     function savedCourses() {
@@ -403,6 +413,12 @@
         layer.append(bit);
       }
     }
+    function celebrateMenu() {
+      const layer=document.querySelector("#menu-confetti");layer.replaceChildren();
+      for(let i=0;i<32;i++){
+        const bit=document.createElement("span");bit.style.setProperty("--x",`${Math.random()*100}%`);bit.style.setProperty("--h",`${25+Math.random()*225}`);bit.style.setProperty("--d",`${Math.random()*.45}s`);layer.append(bit);
+      }
+    }
     function finishLevel() {
       won=true;
       const entry=levels[levelIndex],key=`${entry.difficulty}-${entry.course}`;
@@ -421,12 +437,20 @@
       saveValue("blockBuddyCourses",JSON.stringify(courses));
       const archives=savedCourseArchives();archives[key]={...(archives[key]||{}),moves,player:{...player},box:{...box},gateOpen,movingPhase,history:cloneMoveHistory(moveHistory),historyComplete,completed:true};
       saveValue("blockBuddyCourseArchives",JSON.stringify(archives));
-      dailyState={...dailyState,date:localDateKey(),difficulty:entry.difficulty,course:entry.course,completed:true,moves,player:{...player},box:{...box},gateOpen,movingPhase,history:cloneMoveHistory(moveHistory),historyComplete};
+      const finishingDifficulty=entry.course===4;
+      if(finishingDifficulty){
+        dailyState={date:localDateKey(),difficulty:entry.difficulty,course:entry.course,completed:true,moves,player:{...player},box:{...box},gateOpen,movingPhase,history:cloneMoveHistory(moveHistory),historyComplete};
+        const completed=completedDifficulties();if(!completed.includes(entry.difficulty))completed.push(entry.difficulty);saveValue("blockBuddyCompleted",JSON.stringify(completed));
+        status.textContent=`${entry.name} complete! All five courses cleared. ${detail}`;
+      }else{
+        dailyState={date:localDateKey(),difficulty:entry.difficulty,course:entry.course+1,completed:false};
+        status.textContent=`Course ${entry.course+1} of 5 complete! ${detail} Next course loading…`;
+      }
       saveValue("blockBuddyDaily",JSON.stringify(dailyState));
-      if(entry.course===4){const completed=completedDifficulties();if(!completed.includes(entry.difficulty))completed.push(entry.difficulty);saveValue("blockBuddyCompleted",JSON.stringify(completed));}
-      resetButton.disabled=true;
+      resetButton.disabled=finishingDifficulty;
       render(); celebrate(); winSound();
-      showDifficultyPicker(entry.course===4?entry.difficulty:null);levelMenu.hidden=false;
+      if(finishingDifficulty){showDifficultyPicker(entry.difficulty);levelMenu.hidden=false;}
+      else setTimeout(()=>{if(levelIndex===entry.difficulty*5+entry.course&&won&&!reviewMode&&!practiceMode&&levelMenu.hidden){levelIndex++;start();}},1300);
     }
     function move(dx,dy) {
       if (won||reviewMode||replayTimer) return;
@@ -464,8 +488,8 @@
       if(dailyState?.date!==localDateKey())dailyState=null;
       const active=dailyState,finalCourse=completedNow!==null;
       difficultyList.hidden=false;
-      menuTitle.textContent=finalCourse?"Congratulations!":active?.completed?"Daily puzzle complete!":active?"Today's puzzle":"Choose your difficulty";
-      menuCopy.textContent=finalCourse?`${difficulties[completedNow]} complete — all five courses cleared. Come back tomorrow for another daily course.`:active?.completed?"Today's course is complete. Come back tomorrow to continue your streak. Choose a difficulty to play a course again.":active?`${difficulties[active.difficulty]} · Course ${active.course+1} of 5. Continue today's puzzle, or choose another course to practice.`:"Choose a difficulty to start its next course. Use the arrows to play through courses again.";
+      menuTitle.textContent=finalCourse?"Congratulations!":active?.completed?"Difficulty complete!":active?"Keep going!":"Choose your difficulty";
+      menuCopy.textContent=finalCourse?`${difficulties[completedNow]} complete — all five courses cleared. Choose another difficulty or replay any course whenever you like.`:active?.completed?`All five ${difficulties[active.difficulty]} courses are complete. Choose another difficulty or replay any course whenever you like.`:active?`${difficulties[active.difficulty]} · Course ${active.course+1} of 5. Continue your current course, or choose another course to practice.`:"Choose a difficulty to start its next course. Complete all five to earn its mark; completed courses stay available to replay.";
       continueButton.hidden=!(active&&!active.completed);
       continueButton.textContent="Continue today's puzzle";
       const completed=completedDifficulties();
@@ -477,6 +501,7 @@
         button.setAttribute("aria-label",done?`${difficulties[index]}, completed`:difficulties[index]);
         button.disabled=false;
       });
+      if(finalCourse)celebrateMenu();else document.querySelector("#menu-confetti").replaceChildren();
     }
     function openCourse(difficulty,course) {
       levelIndex=difficulty*5+course;
@@ -493,10 +518,14 @@
     function chooseDifficulty(difficulty) {
       if(dailyState?.date===localDateKey()){
         if(dailyState.difficulty===difficulty&&!dailyState.completed){levelIndex=difficulty*5+dailyState.course;practiceMode=false;reviewMode=false;reviewSnapshot=null;start();closeMenu();}
-        else openCourse(difficulty,dailyState.difficulty===difficulty?dailyState.course:0);
+        else if(dailyState.completed){if(completedDifficulties().includes(difficulty))openCourse(difficulty,0);else startNextDifficulty(difficulty);}
+        else openCourse(difficulty,0);
         return;
       }
       if(completedDifficulties().includes(difficulty)){openCourse(difficulty,0);return;}
+      startNextDifficulty(difficulty);
+    }
+    function startNextDifficulty(difficulty) {
       const course=nextUnfinishedCourse(difficulty);
       if(course<0){openCourse(difficulty,0);return;}
       levelIndex=difficulty*5+course;practiceMode=false;reviewMode=false;reviewSnapshot=null;dailyState={date:localDateKey(),difficulty,course,completed:false};
