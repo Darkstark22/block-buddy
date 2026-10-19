@@ -47,6 +47,73 @@
     .difficulty.completed { border-color:#b8d8c1; background:#f0f8f1; }
     .difficulty.active { border-color:#c5a56d; background:#f8f3e8; }
     .menu-foot { margin:2px 0 0; color:var(--muted); font-size:.8rem; }
+    .menu-customize-card { display:flex; width:100%; align-items:center; gap:12px; margin:13px 0 10px; padding:12px 14px; border:1px solid #e5dcc8; border-radius:16px; background:linear-gradient(110deg,#fffefa,#f3efe5); text-align:left; cursor:pointer; transition:transform .18s,border-color .18s,box-shadow .18s; }
+    .menu-customize-card:hover { transform:translateY(-1px); border-color:#c5a56d; box-shadow:0 8px 22px #88714512; }
+    .player.menu-buddy-preview { flex:none; width:38px; height:38px; border-width:3px; }
+    .menu-garage-copy { display:grid; flex:1; gap:2px; }
+    .menu-garage-copy strong { color:#30394a; font-size:.82rem; }
+    .menu-garage-copy small { color:var(--muted); font-size:.72rem; }
+    .menu-garage-arrow { color:#aa8c50; font-size:1.1rem; }
+    .shop-dialog { width:min(100%,850px); overflow:auto; padding:clamp(20px,4vw,34px); border:1px solid #c3a66a70; background:radial-gradient(ellipse at 18% 0%,#344252 0,#1b2430 43%,#111720 100%); color:#ece7dc; box-shadow:0 36px 120px #06090ebd; text-align:left; }
+    .shop-dialog .eyebrow { color:#d2b575; }
+    .shop-dialog h2 { color:#fff9ec; font-size:clamp(2rem,5vw,2.7rem); }
+    .shop-dialog .menu-copy { margin:5px 0 0; color:#aab3bf; }
+    .garage-header { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:0 2px 22px; }
+    .garage-sign { flex:none; padding:8px 10px; border:1px solid #c5a56d66; border-radius:10px; color:#d5bd85; font-size:.64rem; font-weight:850; letter-spacing:.12em; }
+    .garage-layout { display:grid; grid-template-columns:minmax(190px,.78fr) minmax(0,1.22fr); gap:16px; }
+    .garage-stage,.garage-build { border:1px solid #ffffff17; border-radius:19px; background:linear-gradient(145deg,#ffffff08,#ffffff03); }
+    .garage-stage { padding:13px; }
+    .garage-stage-label { display:flex; justify-content:space-between; align-items:center; color:#9ca7b4; font-size:.62rem; font-weight:850; letter-spacing:.13em; }
+    .garage-led { display:flex; align-items:center; gap:6px; color:#b7d3bc; font-size:.58rem; }
+    .garage-led::before { content:""; width:6px; height:6px; border-radius:50%; background:#8cca9b; box-shadow:0 0 9px #8cca9b; }
+    .shop-preview { position:relative; display:grid; place-items:center; min-height:230px; margin:12px 0 10px; overflow:hidden; border:1px solid #d0b57445; border-radius:16px; background:radial-gradient(ellipse at 50% 44%,#e9d4a821 0,#b1bbcc0b 33%,transparent 66%),linear-gradient(180deg,#151d28,#111720); }
+    .shop-preview::before { position:absolute; inset:0; content:""; background:linear-gradient(112deg,transparent 20%,#ffffff08 49%,transparent 72%); }
+    .garage-floor { position:absolute; bottom:5%; left:10%; width:80%; height:34%; border-top:1px solid #c5a56d42; background:repeating-linear-gradient(90deg,transparent 0 29px,#d5bd8513 30px),repeating-linear-gradient(0deg,transparent 0 20px,#d5bd8510 21px); transform:perspective(100px) rotateX(45deg); mask-image:linear-gradient(to bottom,#000,transparent); }
+    .shop-preview .player { z-index:1; width:82px; height:82px; border-width:5px; filter:drop-shadow(0 0 22px #d9bd7655); }
+    .shop-preview .buddy-face { font-size:23px; }
+    .garage-build-title { margin:7px 0 2px; color:#f4ecd9; font-family:Georgia,"Times New Roman",serif; font-size:1.1rem; }
+    .garage-build-detail { margin:0; color:#929dab; font-size:.7rem; }
+    .shop-streak { display:inline-flex; margin:12px 0 0; padding:6px 9px; border:1px solid #c5a56d55; border-radius:999px; background:#c5a56d12; color:#dec78f; font-size:.67rem; }
+    .garage-build { padding:13px; }
+    .garage-build-heading { display:flex; justify-content:space-between; align-items:center; padding:1px 2px 7px; border-bottom:1px solid #ffffff17; color:#e8e1d2; font-size:.75rem; font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
+    .garage-build-heading span { color:#84909d; font-size:.58rem; letter-spacing:.12em; }
+    .shop-section { margin:13px 0 0; text-align:left; }
+    .shop-section h3 { margin:0 0 6px; color:#cfb575; font-size:.61rem; letter-spacing:.14em; text-transform:uppercase; }
+    .shop-options { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+    .shop-option { display:flex; min-width:0; min-height:75px; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:6px 3px; border:1px solid #ffffff17; border-radius:11px; background:#101720a8; color:#e9e5dc; cursor:pointer; transition:background .18s,border-color .18s,transform .18s; }
+    .shop-option:hover:not(:disabled) { transform:translateY(-2px); border-color:#c5a56d9c; background:#c5a56d12; }
+    .shop-option.selected { border-color:#d3b978; background:linear-gradient(145deg,#c5a56d28,#c5a56d0c); box-shadow:inset 0 0 0 1px #c5a56d33,0 0 15px #c5a56d12; }
+    .shop-option:disabled { border-color:#ffffff0c; background:#ffffff05; color:#727e8a; cursor:not-allowed; }
+    .shop-option-name { font-size:.64rem; font-weight:800; line-height:1.1; }
+    .shop-option-lock { color:#82909e; font-size:.53rem; line-height:1.1; }
+    .shop-option.selected .shop-option-lock { color:#d9c389; }
+    .player.shop-swatch { display:grid; width:27px; height:27px; border-width:3px; }
+    .player.shop-swatch .buddy-face { font-size:7px; }
+    .shop-actions { display:flex; justify-content:flex-end; margin-top:16px; padding-top:13px; border-top:1px solid #ffffff17; }
+    .shop-actions .action.primary { min-width:120px; border:1px solid #dfc785; background:linear-gradient(135deg,#d0b775,#a98c50); color:#171c22; }
+    .shop-actions .action.primary:hover { background:linear-gradient(135deg,#ead69a,#c3a766); }
+    @media (max-width:620px) { .garage-layout { grid-template-columns:1fr; } .shop-preview { min-height:165px; } .shop-preview .player { width:68px; height:68px; } .garage-stage { display:grid; grid-template-columns:1fr auto; } .garage-stage-label { grid-column:1/-1; } .shop-preview { grid-column:1; grid-row:2/4; width:100%; } .garage-build-title,.garage-build-detail,.shop-streak { grid-column:2; align-self:end; } .garage-build-title { align-self:end; } .shop-streak { align-self:start; } }
+    .player.shape-square { border-radius:18%; }
+    .player.shape-circle { border-radius:50%; }
+    .player.shape-diamond { border:0; border-radius:12%; clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%); box-shadow:0 3px 8px #27304428; }
+    .player.shape-star { border:0; border-radius:0; clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 96%,50% 72%,21% 96%,32% 57%,2% 35%,39% 35%); box-shadow:none; }
+    .player.character-skin { border:2px solid #ffffffa8; border-radius:50%; clip-path:none; background-size:cover; box-shadow:inset 0 0 8px #1118,0 4px 12px #1115; }
+    .player.character-basketball { background-color:#e87827; background-image:radial-gradient(ellipse at 32% 24%,#ffbf69 0 8%,transparent 44%),linear-gradient(145deg,#f08b35,#dc641d); }
+    .player.character-soccer { background-color:#f5f4ed; background-image:radial-gradient(circle at 33% 25%,#fff,#f5f4ed 68%); }
+    .player.character-volleyball { background-color:#f5f1df; background-image:conic-gradient(from -30deg,#f7f3e5 0 60deg,#e6c442 60deg 120deg,#398fca 120deg 180deg,#f7f3e5 180deg 240deg,#e6c442 240deg 300deg,#398fca 300deg 360deg); }
+    .player.character-moon { background-color:#aeb9c8; background-image:radial-gradient(circle at 30% 32%,#7f8a9b 0 11%,transparent 12%),radial-gradient(circle at 68% 26%,#e1e6eb 0 7%,transparent 8%),radial-gradient(circle at 69% 66%,#7e8997 0 13%,transparent 14%),radial-gradient(circle at 33% 73%,#dce2e8 0 6%,transparent 7%),radial-gradient(circle at 30% 25%,#eef1f3 0,#aeb9c8 62%); }
+    .player.character-saturn { background-color:#dba955; background-image:radial-gradient(ellipse at 34% 27%,#f5ce7b 0 9%,transparent 10%),linear-gradient(145deg,#f2c778,#bf704b 72%); }
+    .player.character-saturn::before { position:absolute; z-index:2; top:34%; left:-26%; width:150%; height:30%; content:""; border:2px solid #f3d78c; border-radius:50%; box-shadow:0 0 0 2px #7c4d66; transform:rotate(-25deg); pointer-events:none; }
+    .player.character-nebula { background-color:#342753; background-image:radial-gradient(circle at 28% 30%,#ffe28b 0 3%,transparent 5%),radial-gradient(circle at 72% 66%,#fff 0 3%,transparent 5%),radial-gradient(ellipse at 38% 40%,#ec78ad 0 8%,transparent 45%),radial-gradient(ellipse at 70% 60%,#568cdb 0 12%,transparent 53%),radial-gradient(circle at 34% 26%,#8a6ec4,#1b203e 75%); }
+    .player.character-sun { border-color:#fff0a8; background-color:#f5a52b; background-image:radial-gradient(circle at 35% 30%,#fff4b4 0 8%,transparent 10%),radial-gradient(circle at 55% 60%,#ffe56d 0,#f5a52b 63%,#d95d3c 100%); box-shadow:0 0 14px #ffb535,0 0 30px #ff8c3355; }
+    .player.character-ufo { border-color:#c2f1e9; background-color:#45bca7; background-image:radial-gradient(ellipse at 50% 40%,#b5fff4 0 10%,transparent 11%),linear-gradient(180deg,transparent 44%,#d4fff2 45% 52%,transparent 53%),linear-gradient(150deg,#6be0c2,#2683a6); }
+    .player.character-comet { border-color:#d5e7ff; background-color:#6387db; background-image:radial-gradient(circle at 68% 32%,#fffbd3 0 22%,#ffc45c 23% 35%,transparent 36%),linear-gradient(135deg,transparent 38%,#8eb7eeaa 40% 60%,transparent 74%),radial-gradient(circle at 67% 32%,#fff6bb,#5478c4 65%); }
+    .buddy-art { position:absolute; z-index:2; inset:0; display:block; width:100%; height:100%; overflow:visible; pointer-events:none; }
+    .player[data-design="spots"] { background-image:radial-gradient(circle at 28% 30%,#ffffffd9 0 8%,transparent 10%),radial-gradient(circle at 72% 65%,#27304445 0 9%,transparent 11%); }
+    .player[data-design="stripes"] { background-image:repeating-linear-gradient(135deg,transparent 0 6px,#ffffff80 6px 9px); }
+    .player[data-design="sparkle"] { background-image:radial-gradient(circle at 26% 28%,#ffffffed 0 5%,transparent 7%),radial-gradient(circle at 74% 72%,#ffffffb5 0 6%,transparent 8%); }
+    .player .buddy-face { position:relative; z-index:1; display:block; color:#253047; font-size:clamp(7px,1.65vw,12px); font-weight:950; line-height:1; white-space:nowrap; }
+    .shop-swatch .buddy-face { font-size:8px; }
     .card { padding:clamp(14px,4vw,25px); border:1px solid var(--line); border-radius:25px; background:#fff; box-shadow:0 16px 48px #393a2b10; }
     .level-top { display:flex; justify-content:space-between; align-items:center; gap:12px; max-width:390px; min-height:26px; margin:0 auto 10px; }
     .course-nav { display:flex; align-items:center; justify-content:space-between; gap:8px; width:min(100%,390px); margin:0 auto 10px; }
@@ -78,7 +145,7 @@
     .moving-wall { z-index:2; background:#c56d72; box-shadow:inset 0 -4px #984d56; animation:wall-glow .8s ease-in-out infinite alternate; }
     .moving-wall::after { content:"↔"; color:#fff; font-size:clamp(1rem,3.5vw,1.4rem); }
     .box { z-index:1; width:72%; height:72%; border-radius:8px; background:var(--gold); box-shadow:inset 0 -5px #cc9147; }
-    .player { z-index:1; width:62%; height:62%; border:clamp(3px,1vw,5px) solid var(--blue); border-radius:50%; background:#e4ebfc; box-shadow:inset 0 0 0 3px #fff; }
+    .player { position:relative; z-index:1; display:grid; place-items:center; flex:none; min-width:0; aspect-ratio:1; width:62%; height:auto; overflow:hidden; border:clamp(3px,1vw,5px) solid var(--buddy-accent,var(--blue)); border-radius:50%; background-color:var(--buddy-fill,#e4ebfc); box-shadow:inset 0 0 0 3px #ffffffaa; }
     .player.on-goal { border-color:var(--green); background:#d8efdf; }
     .box-pushed .box { animation:bump .18s ease-out; }
     .is-won .goal::after { color:#e2ae43; transform:scale(1.28) rotate(12deg); animation:star-pop .5s ease-out; }
@@ -116,6 +183,7 @@
 <body>
   <div class="corner-tools" aria-label="Game options">
     <button id="menu-open" class="icon-button" type="button" aria-label="Open level menu" title="Choose a level">☰</button>
+    <button id="shop-open" class="icon-button" type="button" aria-label="Customize your buddy" title="Customize your buddy">✦</button>
     <button id="sound" class="icon-button" type="button" aria-label="Turn sound off" aria-pressed="true" title="Sound on"><span id="sound-icon" aria-hidden="true">🔊</span></button>
   </div>
   <div id="level-menu" class="menu-backdrop">
@@ -123,7 +191,7 @@
       <div id="menu-confetti" class="menu-confetti" aria-hidden="true"></div>
       <p class="eyebrow">Welcome back</p>
       <h2 id="menu-title">Choose your puzzle</h2>
-      <p id="menu-copy" class="menu-copy">Choose a difficulty for today's puzzle. Each course can be solved once.</p>
+      <p id="menu-copy" class="menu-copy" hidden></p>
       <div class="menu-streak" aria-live="polite"><span aria-hidden="true">🔥</span><span id="streak-count">0 day streak</span></div>
       <nav id="difficulty-list" class="difficulty-list" aria-label="Choose a difficulty">
         <button class="difficulty" type="button" data-level="0">Easy</button>
@@ -131,8 +199,33 @@
         <button class="difficulty" type="button" data-level="2">Hard</button>
         <button class="difficulty" type="button" data-level="3">Impossible</button>
       </nav>
+      <button id="menu-shop" class="menu-customize-card" type="button">
+        <span id="menu-buddy-preview" class="player menu-buddy-preview" aria-hidden="true"></span>
+        <span class="menu-garage-copy"><strong>Buddy Garage</strong><small>Customize shape, color, face &amp; finish</small></span>
+        <span class="menu-garage-arrow" aria-hidden="true">↗</span>
+      </button>
       <button id="menu-continue" class="action" type="button" hidden>Continue current puzzle</button>
-      <p class="menu-foot">One course per day · Complete a difficulty's five courses to earn its mark.</p>
+    </section>
+  </div>
+  <div id="shop-menu" class="menu-backdrop" hidden>
+    <section class="menu-dialog shop-dialog" role="dialog" aria-modal="true" aria-labelledby="shop-title">
+      <div class="garage-header">
+        <div><p class="eyebrow">Block Buddy · Custom Garage</p><h2 id="shop-title">Build your buddy</h2><p class="menu-copy">Your own little legend. Choose a look, then take it for a spin.</p></div>
+      </div>
+      <div class="garage-layout">
+        <aside class="garage-stage">
+          <div class="garage-stage-label"><span>LIVE PREVIEW</span><span class="garage-led">READY</span></div>
+          <div class="shop-preview" aria-label="Character preview"><div class="garage-floor" aria-hidden="true"></div><span id="shop-preview-buddy" class="player"></span></div>
+          <h3 id="shop-look-title" class="garage-build-title">Your current look</h3>
+          <p id="shop-look-detail" class="garage-build-detail">Shape · Color · Face · Finish</p>
+          <p id="shop-streak" class="shop-streak"></p>
+        </aside>
+        <div class="garage-build">
+          <div class="garage-build-heading">Choose your build <span>PERSONALIZE</span></div>
+          <div id="shop-categories"></div>
+        </div>
+      </div>
+      <div class="shop-actions"><button id="shop-close" class="action primary" type="button">Done</button></div>
     </section>
   </div>
   <main>
@@ -165,6 +258,14 @@
   </main>
   <script>
     const difficulties=["Easy","Medium","Hard","Impossible"];
+    const styleCatalog={
+      shape:{label:"Shape",items:[{id:"circle",label:"Circle",streak:0},{id:"square",label:"Square",streak:0},{id:"diamond",label:"Diamond",streak:3},{id:"star",label:"Star",streak:7}]},
+      color:{label:"Color",items:[{id:"blue",label:"Sky",streak:0,accent:"#6387db",fill:"#e4ebfc"},{id:"mint",label:"Mint",streak:0,accent:"#4da984",fill:"#dff5e9"},{id:"coral",label:"Coral",streak:3,accent:"#e47775",fill:"#ffe4df"},{id:"violet",label:"Violet",streak:7,accent:"#8b6bc5",fill:"#eee5ff"},{id:"gold",label:"Gold",streak:14,accent:"#c49738",fill:"#fff1bd"}]},
+      face:{label:"Face",items:[{id:"smile",label:"Smile",streak:0,mark:"•ᴗ•"},{id:"wink",label:"Wink",streak:3,mark:";ᴗ)"},{id:"shades",label:"Shades",streak:7,mark:"▰ᴗ▰"},{id:"cosmic",label:"Cosmic",streak:14,mark:"✧ᴗ✧"}]},
+      design:{label:"Design",items:[{id:"plain",label:"Plain",streak:0},{id:"spots",label:"Spots",streak:3},{id:"stripes",label:"Stripes",streak:7},{id:"sparkle",label:"Sparkle",streak:14}]},
+      character:{label:"Rare characters",items:[{id:"classic",label:"Classic Buddy",streak:0},{id:"basketball",label:"Basketball",streak:14},{id:"soccer",label:"Soccer Ball",streak:21},{id:"volleyball",label:"Volleyball",streak:30},{id:"moon",label:"Moon",streak:45},{id:"saturn",label:"Saturn",streak:60},{id:"nebula",label:"Nebula",streak:75},{id:"sun",label:"Supernova",streak:100},{id:"ufo",label:"UFO",streak:125},{id:"comet",label:"Comet",streak:150}]}
+    };
+    const baseBuddyStyle={shape:"circle",color:"blue",face:"smile",design:"plain",character:"classic"};
     const courseLayouts=[
       {player:[1,3],box:[2,3],goal:[4,1],walls:[[[5,5]],[[1,1],[5,5],[3,1]],[[1,1],[5,5],[1,5],[3,1],[2,1]],[[1,1],[5,5],[1,5],[5,1],[3,5],[5,3],[2,5],[3,1]]]},
       {player:[5,4],box:[4,4],goal:[2,2],walls:[[[1,5]],[[1,5],[5,1],[2,1]],[[1,5],[5,1],[1,1],[2,1],[4,2]],[[1,5],[5,1],[1,1],[5,5],[3,1],[4,1],[2,1],[4,2]]]},
@@ -184,7 +285,7 @@
           [[2,2],[3,2],[5,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[4,6],[5,6],[6,6]],
           [[2,2],[4,2],[5,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[3,6],[5,6],[6,6]],
           [[2,2],[3,2],[4,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[3,6],[4,6],[6,6]],
-          [[2,2],[3,2],[5,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[3,6],[4,6],[5,6]],
+          [[2,2],[3,2],[5,2],[2,3],[6,3],[2,5],[2,6],[3,6],[4,6],[5,6]],
           [[2,2],[4,2],[5,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[3,6],[4,6],[6,6]]
         ][course];
         for(const [x,y] of hardWalls)if(!protectedCells.has(`${x},${y}`))cells[y][x]="#";
@@ -224,6 +325,8 @@
     const coursePosition=document.querySelector("#course-position"),coursePrev=document.querySelector("#course-prev"),courseNext=document.querySelector("#course-next");
     const replayButton=document.querySelector("#replay"),playAgainButton=document.querySelector("#play-again");
     const menuTitle=document.querySelector("#menu-title"),menuCopy=document.querySelector("#menu-copy");
+    const shopMenu=document.querySelector("#shop-menu"),shopCategories=document.querySelector("#shop-categories"),shopPreview=document.querySelector("#shop-preview-buddy"),shopStreak=document.querySelector("#shop-streak");
+    let buddyStyle=loadBuddyStyle(),shopReturnFocus=null;
     let levelIndex=0,level,player,box,moves,won,fastestMoves,hasStarted=false,gateOpen=false,movingTrack=null,movingPhase=0,dailyState=null,practiceMode=false,reviewMode=false,reviewSnapshot=null,moveHistory=[],historyComplete=true,replayTimer=null,replayTrailActive=false,replayPlayerTrail=new Set(),replayBoxTrail=new Set();
     function getSaved(key) { try { return localStorage.getItem(key); } catch { return null; } }
     function saveValue(key,value) { try { localStorage.setItem(key,value); return true; } catch { return false; } }
@@ -290,13 +393,101 @@
       try {
         const saved = JSON.parse(getSaved("blockBuddyStreak") || "{}");
         const gap = saved.lastDate ? daysBetween(saved.lastDate, today) : Infinity;
-        if (gap === 0) return readStreak();
+        if (gap === 0) { const days=readStreak();recordBestStreak(days);return days; }
         const days = gap === 1 ? (Number(saved.days) || 0) + 1 : 1;
         saveValue("blockBuddyStreak", JSON.stringify({days,lastDate:today}));
+        recordBestStreak(days);
         return days;
       } catch { return 0; }
     }
     function showStreak(days) { streakLabel.textContent = `${days} ${days === 1 ? "day" : "days"} streak`; }
+    function recordBestStreak(days) { saveValue("blockBuddyBestStreak",String(Math.max(Number(getSaved("blockBuddyBestStreak"))||0,Number(days)||0))); }
+    function bestStreak() { return Math.max(Number(getSaved("blockBuddyBestStreak"))||0,readStreak()); }
+    function loadBuddyStyle() {
+      try {
+        const saved=JSON.parse(getSaved("blockBuddyStyle")||"{}");
+        const valid={};
+        for(const [category,definition] of Object.entries(styleCatalog))valid[category]=definition.items.some(item=>item.id===saved[category])?saved[category]:baseBuddyStyle[category];
+        return valid;
+      } catch { return {...baseBuddyStyle}; }
+    }
+    function findStyleItem(category,id) { return styleCatalog[category].items.find(item=>item.id===id)||styleCatalog[category].items[0]; }
+    function makeCharacterArt(id) {
+      if(!["basketball","soccer","volleyball"].includes(id))return null;
+      const ns="http://www.w3.org/2000/svg",svg=document.createElementNS(ns,"svg");svg.setAttribute("viewBox","0 0 100 100");svg.setAttribute("class","buddy-art");svg.setAttribute("aria-hidden","true");
+      const path=(d,stroke,width=3.5)=>{const node=document.createElementNS(ns,"path");node.setAttribute("d",d);node.setAttribute("fill","none");node.setAttribute("stroke",stroke);node.setAttribute("stroke-width",String(width));node.setAttribute("stroke-linecap","round");node.setAttribute("stroke-linejoin","round");svg.append(node);};
+      if(id==="basketball"){
+        // Classic basketball channels: two smooth, symmetric curves in each direction.
+        path("M50 -4 C31 20 31 80 50 104","#542d1a",2.8);
+        path("M50 -4 C69 20 69 80 50 104","#542d1a",2.8);
+        path("M-4 50 C20 31 80 31 104 50","#542d1a",2.8);
+        path("M-4 50 C20 69 80 69 104 50","#542d1a",2.8);
+      }else if(id==="soccer"){
+        const polygon=(points)=>{const node=document.createElementNS(ns,"polygon");node.setAttribute("points",points);node.setAttribute("fill","#17212b");node.setAttribute("stroke","#f5f4ed");node.setAttribute("stroke-width","1.8");svg.append(node);};
+        // A central pentagon with five evenly spaced outer pentagons, the familiar panel layout.
+        polygon("50,34 65,45 59,63 41,63 35,45");
+        polygon("50,5 60,12 56,24 44,24 40,12");
+        polygon("88,30 99,38 95,51 82,51 78,38");
+        polygon("73,75 83,83 79,96 66,96 62,83");
+        polygon("27,75 38,83 34,96 21,96 17,83");
+        polygon("12,30 23,38 19,51 6,51 2,38");
+        path("M50 34 L50 24 M65 45 L78 38 M59 63 L66 83 M41 63 L34 83 M35 45 L19 38","#69727a",1.7);
+      }else{
+        path("M12 0 C34 23 40 76 14 100","#fff8e3",4.2);
+        path("M50 -4 C34 22 34 78 50 104","#fff8e3",4.2);
+        path("M88 0 C66 23 60 76 86 100","#fff8e3",4.2);
+      }
+      return svg;
+    }
+    function applyBuddyStyle(element,look=buddyStyle) {
+      element.classList.add("player");
+      for(const item of styleCatalog.character.items)element.classList.remove(`character-${item.id}`);
+      element.classList.remove("character-skin");
+      const character=findStyleItem("character",look.character);
+      if(character.id!=="classic"){
+        element.classList.add("character-skin",`character-${character.id}`);
+        element.dataset.design="plain";element.setAttribute("aria-label",character.label);element.replaceChildren();
+        const art=makeCharacterArt(character.id);if(art)element.append(art);
+        return;
+      }
+      for(const item of styleCatalog.shape.items)element.classList.remove(`shape-${item.id}`);
+      element.classList.add(`shape-${look.shape}`);
+      element.dataset.design=look.design;
+      element.setAttribute("aria-label","player");
+      const color=findStyleItem("color",look.color);
+      element.style.setProperty("--buddy-accent",color.accent);
+      element.style.setProperty("--buddy-fill",color.fill);
+      element.replaceChildren();
+      const face=document.createElement("span");face.className="buddy-face";face.textContent=findStyleItem("face",look.face).mark;element.append(face);
+    }
+    function renderShop() {
+      const best=bestStreak();
+      shopStreak.textContent=`🔥 Best streak: ${best} ${best===1?"day":"days"} · streak unlocks stay yours`;
+      applyBuddyStyle(shopPreview);
+      applyBuddyStyle(document.querySelector("#menu-buddy-preview"));
+      const equippedShape=findStyleItem("shape",buddyStyle.shape),equippedColor=findStyleItem("color",buddyStyle.color),equippedFace=findStyleItem("face",buddyStyle.face),equippedDesign=findStyleItem("design",buddyStyle.design),equippedCharacter=findStyleItem("character",buddyStyle.character);
+      document.querySelector("#shop-look-title").textContent=equippedCharacter.id==="classic"?`${equippedColor.label} ${equippedShape.label}`:equippedCharacter.label;
+      document.querySelector("#shop-look-detail").textContent=equippedCharacter.id==="classic"?`${equippedFace.label} face · ${equippedDesign.label} finish`:`Rare character · ${equippedCharacter.streak}-day streak unlock`;
+      shopCategories.replaceChildren();
+      for(const [category,definition] of Object.entries(styleCatalog)){
+        const section=document.createElement("section");section.className="shop-section";
+        const heading=document.createElement("h3");heading.textContent=definition.label;section.append(heading);
+        const options=document.createElement("div");options.className="shop-options";
+        for(const item of definition.items){
+          const unlocked=best>=item.streak,selected=buddyStyle[category]===item.id;
+          const button=document.createElement("button");button.type="button";button.className=`shop-option${selected?" selected":""}`;button.disabled=!unlocked;button.dataset.category=category;button.dataset.item=item.id;
+          button.setAttribute("aria-pressed",String(selected));button.setAttribute("aria-label",`${item.label}${unlocked?(selected?", equipped":", equip"):", locked"}`);
+          const swatch=document.createElement("span");swatch.className="player shop-swatch";
+          const preview={...buddyStyle,[category]:item.id};if(category!=="character")preview.character="classic";applyBuddyStyle(swatch,preview);
+          const name=document.createElement("span");name.className="shop-option-name";name.textContent=item.label;
+          const info=document.createElement("span");info.className="shop-option-lock";info.textContent=unlocked?(selected?"Equipped":"Choose"):`🔥 ${item.streak} day streak`;
+          button.append(swatch,name,info);options.append(button);
+        }
+        section.append(options);shopCategories.append(section);
+      }
+    }
+    function openShop() { shopReturnFocus=document.activeElement;renderShop();shopMenu.hidden=false;document.querySelector("#shop-close").focus(); }
+    function closeShop() { shopMenu.hidden=true;(shopReturnFocus&&shopReturnFocus.getClientRects().length?shopReturnFocus:document.querySelector("#shop-open")).focus(); }
     function movingAt(track,phase) { return track?.[phase]||null; }
     function isWall(x,y,map=level,opened=gateOpen,phase=movingPhase,track=movingTrack) {
       const moving=movingAt(track,phase);
@@ -352,7 +543,7 @@
         if (level[y][x]==="D") cell.classList.add(gateOpen?"gate-open":"gate");
         const moving=movingAt(movingTrack,movingPhase);if(moving&&moving.x===x&&moving.y===y)cell.classList.add("moving-wall");
         if (box.x===x && box.y===y) { const block=document.createElement("span"); block.className="box"; block.setAttribute("aria-label","wooden block"); cell.append(block); }
-        if (player.x===x && player.y===y) { const buddy=document.createElement("span"); buddy.className="player"+(level[y][x]==="G"?" on-goal":""); buddy.setAttribute("aria-label","player"); cell.append(buddy); }
+        if (player.x===x && player.y===y) { const buddy=document.createElement("span"); buddy.className="player"+(level[y][x]==="G"?" on-goal":""); buddy.setAttribute("aria-label","player"); applyBuddyStyle(buddy); cell.append(buddy); }
         board.append(cell);
       }
       board.classList.toggle("is-won",won); board.classList.toggle("box-pushed",pushed);
@@ -395,8 +586,8 @@
       historyComplete=savedDaily?(Array.isArray(dailyState.history)?dailyState.historyComplete!==false:moves===0):true;
       if(reviewMode&&reviewSnapshot){player={...reviewSnapshot.player};box={...reviewSnapshot.box};moves=Number(reviewSnapshot.moves)||0;gateOpen=!!reviewSnapshot.gateOpen;movingPhase=Number(reviewSnapshot.movingPhase)||0;won=true;moveHistory=cloneMoveHistory(reviewSnapshot.history);historyComplete=!!reviewSnapshot.historyComplete;}
       fastestMoves=shortestSolve(level,entry.player,entry.box,false,movingTrack);
-      levelName.textContent=`${entry.name} · Course ${entry.course+1} of 5${practiceMode?" · Practice":""}`;
-      coursePosition.textContent=`${entry.name} · Course ${entry.course+1} of 5${practiceMode?" · Practice":""}`;
+      levelName.textContent=`${entry.name}${practiceMode?" · Practice":""}`;
+      coursePosition.textContent=`${entry.course+1} / 5`;
       coursePrev.disabled=entry.course===0;courseNext.disabled=entry.course===4;
       record.textContent=`Fastest: ${fastestMoves ?? "—"} moves · Your score: ${moves} moves`;
       status.textContent=reviewMode?"Completed course — read-only review.":practiceMode?"Practice run — your saved daily result stays safe.":"Ready when you are!"; status.classList.toggle("win",reviewMode);
@@ -474,6 +665,7 @@
       }
     }
     showStreak(readStreak());
+    recordBestStreak(readStreak());
     function updateSoundButton() {
       soundButton.setAttribute("aria-pressed",String(soundOn));
       soundButton.setAttribute("aria-label",soundOn?"Turn sound off":"Turn sound on");
@@ -487,9 +679,11 @@
     function showDifficultyPicker(completedNow=null) {
       if(dailyState?.date!==localDateKey())dailyState=null;
       const active=dailyState,finalCourse=completedNow!==null;
+      applyBuddyStyle(document.querySelector("#menu-buddy-preview"));
       difficultyList.hidden=false;
       menuTitle.textContent=finalCourse?"Congratulations!":active?.completed?"Difficulty complete!":active?"Keep going!":"Choose your difficulty";
-      menuCopy.textContent=finalCourse?`${difficulties[completedNow]} complete — all five courses cleared. Choose another difficulty or replay any course whenever you like.`:active?.completed?`All five ${difficulties[active.difficulty]} courses are complete. Choose another difficulty or replay any course whenever you like.`:active?`${difficulties[active.difficulty]} · Course ${active.course+1} of 5. Continue your current course, or choose another course to practice.`:"Choose a difficulty to start its next course. Complete all five to earn its mark; completed courses stay available to replay.";
+      menuCopy.textContent=finalCourse?`${difficulties[completedNow]} complete — all five courses cleared. Choose another difficulty or replay any course whenever you like.`:active?.completed?`All five ${difficulties[active.difficulty]} courses are complete. Choose another difficulty or replay any course whenever you like.`:active?`${difficulties[active.difficulty]} · Course ${active.course+1} of 5. Continue your current course, or choose another course to practice.`:"";
+      menuCopy.hidden=!menuCopy.textContent;
       continueButton.hidden=!(active&&!active.completed);
       continueButton.textContent="Continue today's puzzle";
       const completed=completedDifficulties();
@@ -554,6 +748,7 @@
     updateSoundButton();
     const directions={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]};
     addEventListener("keydown",event=>{
+      if(!shopMenu.hidden){if(event.key==="Escape")closeShop();return;}
       if (!levelMenu.hidden) { if (event.key==="Escape"&&hasStarted&&(!dailyState?.completed||reviewMode||practiceMode)) closeMenu(); return; }
       if (event.key.toLowerCase()==="r") { if((!dailyState?.completed||practiceMode)&&!reviewMode)startOver(); return; }
       const direction=directions[event.key]||directions[event.key.toLowerCase()];
@@ -567,6 +762,15 @@
     replayButton.addEventListener("click",replayPath);
     soundButton.addEventListener("click",()=>{ soundOn=!soundOn; saveValue("blockBuddySound",soundOn?"on":"off"); updateSoundButton(); if(soundOn) playTone(523,.1); });
     document.querySelector("#menu-open").addEventListener("click",openMenu);
+    document.querySelector("#shop-open").addEventListener("click",openShop);
+    document.querySelector("#menu-shop").addEventListener("click",openShop);
+    document.querySelector("#shop-close").addEventListener("click",closeShop);
+    shopCategories.addEventListener("click",event=>{
+      const button=event.target.closest(".shop-option");
+      if(!button||button.disabled)return;
+      buddyStyle=button.dataset.category==="character"?{...buddyStyle,character:button.dataset.item}:{...buddyStyle,[button.dataset.category]:button.dataset.item,character:"classic"};
+      saveValue("blockBuddyStyle",JSON.stringify(buddyStyle));renderShop();render();
+    });
     continueButton.addEventListener("click",continueToday);
     coursePrev.addEventListener("click",()=>browseCourse(-1));
     courseNext.addEventListener("click",()=>browseCourse(1));
