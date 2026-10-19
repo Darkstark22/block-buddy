@@ -3,142 +3,547 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tiny Block Puzzle</title>
+  <meta name="theme-color" content="#f6f5f0">
+  <title>Block Buddy — Daily Block Puzzle</title>
   <style>
-    :root { color-scheme: light; --ink:#273044; --muted:#667085; --paper:#f7f5ef; --blue:#6387db; --green:#79b997; }
+    :root {
+      color-scheme: light;
+      --ink:#273044; --muted:#788091; --paper:#f6f5f0; --line:#e8e7e0;
+      --blue:#6387db; --blue-light:#e7edfb; --green:#60a879; --gold:#c5a56d;
+    }
     * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; display:grid; place-items:center; padding:24px; background:var(--paper); color:var(--ink); font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
-    main { width:min(100%,520px); text-align:center; }
-    .eyebrow { margin:0 0 4px; color:var(--muted); font-size:.8rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
-    h1 { margin:0; font-size:clamp(2rem,8vw,3rem); letter-spacing:-.05em; }
-    .intro { margin:8px auto 20px; max-width:370px; color:var(--muted); }
-    .game-card { padding:clamp(14px,4vw,24px); border:1px solid #e6e2d7; border-radius:24px; background:#fff; box-shadow:0 12px 36px #37362412; }
-    .topline { display:flex; justify-content:space-between; align-items:center; gap:12px; margin:0 auto 14px; max-width:340px; }
-    #status { min-height:1.5em; font-weight:700; }
-    #moves { color:var(--muted); font-size:.92rem; white-space:nowrap; }
-    .board { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; width:min(100%,340px); margin:auto; padding:10px; border-radius:18px; background:#e9edf4; touch-action:manipulation; }
-    .cell { aspect-ratio:1; display:grid; place-items:center; border-radius:11px; background:#f7f8fa; }
-    .wall { background:#45536d; box-shadow:inset 0 -5px #354158; }
-    .goal { background:#e8f4eb; }
-    .goal::after { content:"★"; color:#77ad87; font-size:1.6rem; }
-    .box { width:72%; height:72%; border-radius:8px; background:#e9ae5c; box-shadow:inset 0 -5px #ce8f3f; }
-    .player { width:60%; height:60%; border:5px solid #6387db; border-radius:50%; background:#dfe8ff; box-shadow:inset 0 0 0 3px white; }
-    .player.on-goal { border-color:#459c68; background:#d5efdc; }
-    .controls { display:flex; flex-wrap:wrap; justify-content:center; gap:9px; margin-top:16px; }
-    button { border:0; border-radius:12px; padding:10px 15px; color:var(--ink); background:#eef1f7; font:inherit; font-weight:700; cursor:pointer; }
-    button:hover { background:#e2e8f3; }
-    button:focus-visible { outline:3px solid #6387db; outline-offset:2px; }
-    .hint { margin:14px 0 0; color:var(--muted); font-size:.9rem; }
-    .mobile-controls { display:grid; grid-template-columns:repeat(3,48px); grid-template-rows:repeat(2,42px); gap:5px; justify-content:center; margin:12px auto 0; }
-    .mobile-controls button { padding:0; font-size:1.2rem; }
+    body {
+      margin:0; min-height:100vh; padding:26px 16px 40px; display:grid; place-items:center;
+      color:var(--ink); background:radial-gradient(ellipse at 50% 0%, #fff 0, var(--paper) 66%);
+      font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    button { color:inherit; font:inherit; }
+    main { width:min(100%,560px); padding-top:34px; text-align:center; }
+    .eyebrow { margin:0 0 3px; color:var(--muted); font-size:.76rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+    h1 { margin:0; font-size:clamp(2.3rem,9vw,3.4rem); line-height:1.1; letter-spacing:-.065em; }
+    .intro { max-width:390px; margin:9px auto 22px; color:var(--muted); }
+    [hidden] { display:none !important; }
+    .corner-tools { position:fixed; z-index:20; top:14px; right:14px; display:flex; gap:7px; }
+    .icon-button { display:grid; place-items:center; width:40px; height:40px; padding:0; border:1px solid var(--line); border-radius:50%; background:#fff; box-shadow:0 4px 14px #27304412; font-size:1.05rem; cursor:pointer; }
+    .icon-button:hover { background:#f0f2f6; }
+    .icon-button:focus-visible { outline:3px solid #94aefa; outline-offset:2px; }
+    .menu-backdrop { position:fixed; z-index:15; inset:0; display:grid; place-items:center; overflow:auto; padding:20px; background:#27304472; backdrop-filter:blur(5px); }
+    .menu-dialog { width:min(100%,455px); max-height:calc(100vh - 40px); overflow:auto; padding:30px; border:1px solid #e7dfcf; border-radius:25px; background:linear-gradient(145deg,#fffefa,#f8f6ef); box-shadow:0 28px 90px #11182755; text-align:center; animation:menu-in .22s ease-out; }
+    .menu-dialog h2 { margin:0; color:#263143; font-family:Georgia,"Times New Roman",serif; font-size:2rem; font-weight:500; letter-spacing:-.045em; }
+    .menu-dialog .eyebrow { color:#987b49; }
+    .menu-copy { margin:8px 0 19px; color:var(--muted); font-size:.91rem; }
+    .menu-streak { display:flex; align-items:center; justify-content:center; gap:8px; margin:0 auto 20px; padding:9px 13px; border:1px solid #e8ddc4; border-radius:14px; background:#fdfaf2; color:#765b2b; font-weight:800; }
+    .difficulty-list { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin:0 0 14px; }
+    .difficulty {
+      min-height:62px; padding:10px 12px; border:1px solid var(--line); border-radius:14px; background:#fff;
+      color:var(--ink); font-size:.92rem; font-weight:800; cursor:pointer; transition:background .18s, color .18s, transform .18s;
+    }
+    .difficulty:hover { transform:translateY(-1px); }
+    .difficulty small { display:block; margin-top:2px; color:var(--muted); font-size:.73rem; font-weight:600; }
+    .difficulty[aria-pressed="true"] { border-color:#c5a56d; background:#f5f0e4; color:var(--ink); }
+    .difficulty .completion { float:right; color:#338253; font-size:1rem; }
+    .difficulty.completed { border-color:#b8d8c1; background:#f0f8f1; }
+    .difficulty.active { border-color:#c5a56d; background:#f8f3e8; }
+    .menu-foot { margin:2px 0 0; color:var(--muted); font-size:.8rem; }
+    .card { padding:clamp(14px,4vw,25px); border:1px solid var(--line); border-radius:25px; background:#fff; box-shadow:0 16px 48px #393a2b10; }
+    .level-top { display:flex; justify-content:space-between; align-items:center; gap:12px; max-width:390px; min-height:26px; margin:0 auto 10px; }
+    .course-nav { display:flex; align-items:center; justify-content:space-between; gap:8px; width:min(100%,390px); margin:0 auto 10px; }
+    .course-nav button { min-width:42px; padding:5px 10px; border:1px solid var(--line); border-radius:10px; background:#fff; font-weight:800; cursor:pointer; }
+    .course-nav button:disabled { opacity:.35; cursor:default; }
+    .course-nav span { color:var(--muted); font-size:.82rem; font-weight:750; }
+    .level-name { text-align:left; font-weight:800; }
+    .move-count { color:var(--muted); font-size:.9rem; white-space:nowrap; }
+    .record { min-height:1.4em; margin:0 0 12px; color:var(--muted); font-size:.86rem; }
+    .board-wrap { position:relative; width:min(100%,390px); margin:auto; }
+    .board {
+      display:grid; gap:clamp(3px,1.2vw,7px); width:100%; margin:auto; padding:clamp(7px,2vw,11px);
+      border:1px solid #e3e7ef; border-radius:19px; background:#edf0f5; touch-action:manipulation;
+    }
+    .cell { position:relative; display:grid; place-items:center; aspect-ratio:1; overflow:hidden; border-radius:clamp(5px,1.8vw,10px); background:#fafbfc; }
+    .cell.trail-player { box-shadow:inset 0 0 0 3px #6387db99; }
+    .cell.trail-box { background:#f4ead4; box-shadow:inset 0 0 0 3px #c5a56d; }
+    .cell.trail-player.trail-box { background:#f1eddf; box-shadow:inset 0 0 0 3px #8f83b5; }
+    .wall { background:#46536a; box-shadow:inset 0 -4px #354156; }
+    .wall::after { content:""; position:absolute; inset:4px; border:1px solid #ffffff13; border-radius:inherit; }
+    .goal { background:#e9f4eb; }
+    .goal::after { content:"★"; color:#78ad87; font-size:clamp(1rem,4vw,1.65rem); line-height:1; transition:transform .25s, color .25s; }
+    .switch { background:#f0eafb; }
+    .switch::after { content:"✦"; color:#8662c3; font-size:clamp(1rem,3.5vw,1.4rem); }
+    .gate { background:#bd9a62; box-shadow:inset 0 -4px #987744; }
+    .gate::after { content:"▥"; color:#fff8e8; font-size:clamp(1rem,3.5vw,1.4rem); }
+    .gate-open { background:#e9f4eb; }
+    .gate-open::after { content:"✓"; color:#60a879; }
+    .moving-wall { z-index:2; background:#c56d72; box-shadow:inset 0 -4px #984d56; animation:wall-glow .8s ease-in-out infinite alternate; }
+    .moving-wall::after { content:"↔"; color:#fff; font-size:clamp(1rem,3.5vw,1.4rem); }
+    .box { z-index:1; width:72%; height:72%; border-radius:8px; background:var(--gold); box-shadow:inset 0 -5px #cc9147; }
+    .player { z-index:1; width:62%; height:62%; border:clamp(3px,1vw,5px) solid var(--blue); border-radius:50%; background:#e4ebfc; box-shadow:inset 0 0 0 3px #fff; }
+    .player.on-goal { border-color:var(--green); background:#d8efdf; }
+    .box-pushed .box { animation:bump .18s ease-out; }
+    .is-won .goal::after { color:#e2ae43; transform:scale(1.28) rotate(12deg); animation:star-pop .5s ease-out; }
+    .celebration { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+    .confetti { position:absolute; left:var(--x); top:45%; width:8px; height:11px; border-radius:2px; background:hsl(var(--h) 75% 62%); opacity:0; animation:confetti-fall .9s ease-out var(--d) forwards; }
+    .status { min-height:1.6em; margin:14px 0 0; font-weight:750; }
+    .status.win { color:#377a4f; }
+    .controls { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:15px; }
+    .action {
+      padding:9px 13px; border:1px solid transparent; border-radius:12px; background:#eef1f7; font-size:.93rem; font-weight:750; cursor:pointer;
+    }
+    .action:hover { background:#e3e8f1; }
+    .action.primary { background:var(--blue); color:#fff; }
+    .action.primary:hover { background:#5276c9; }
+    .action:focus-visible,.difficulty:focus-visible { outline:3px solid #94aefa; outline-offset:2px; }
+    .mobile-controls { display:grid; grid-template-columns:repeat(3,46px); grid-template-rows:repeat(2,40px); gap:5px; justify-content:center; margin:13px auto 0; }
+    .mobile-controls button { padding:0; font-size:1.15rem; }
     .mobile-controls button:nth-child(1) { grid-column:2; }
     .mobile-controls button:nth-child(2) { grid-column:1; grid-row:2; }
     .mobile-controls button:nth-child(3) { grid-column:2; grid-row:2; }
     .mobile-controls button:nth-child(4) { grid-column:3; grid-row:2; }
+    .hint { margin:13px 0 0; color:var(--muted); font-size:.85rem; }
+    .fine-print { margin:14px auto 0; max-width:400px; color:#9097a4; font-size:.78rem; }
+    @keyframes bump { 50% { transform:scale(1.13) rotate(-3deg); } }
+    @keyframes wall-glow { to { filter:brightness(1.16); } }
+    @keyframes menu-in { from { opacity:0; transform:translateY(8px) scale(.98); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes star-pop { 45% { transform:scale(1.55) rotate(20deg); } }
+    @keyframes confetti-fall { 0% { opacity:0; transform:translateY(0) rotate(0); } 15% { opacity:1; } 100% { opacity:0; transform:translateY(115px) rotate(240deg); } }
     @media (min-width:600px) { .mobile-controls { display:none; } }
+    @media (max-width:380px) { .menu-dialog { padding:22px 17px; } .difficulty { min-height:58px; } }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
   </style>
 </head>
 <body>
+  <div class="corner-tools" aria-label="Game options">
+    <button id="menu-open" class="icon-button" type="button" aria-label="Open level menu" title="Choose a level">☰</button>
+    <button id="sound" class="icon-button" type="button" aria-label="Turn sound off" aria-pressed="true" title="Sound on"><span id="sound-icon" aria-hidden="true">🔊</span></button>
+  </div>
+  <div id="level-menu" class="menu-backdrop">
+    <section class="menu-dialog" role="dialog" aria-modal="true" aria-labelledby="menu-title">
+      <p class="eyebrow">Welcome back</p>
+      <h2 id="menu-title">Choose your puzzle</h2>
+      <p id="menu-copy" class="menu-copy">Choose a difficulty for today's puzzle. Each course can be solved once.</p>
+      <div class="menu-streak" aria-live="polite"><span aria-hidden="true">🔥</span><span id="streak-count">0 day streak</span></div>
+      <nav id="difficulty-list" class="difficulty-list" aria-label="Choose a difficulty">
+        <button class="difficulty" type="button" data-level="0">Easy</button>
+        <button class="difficulty" type="button" data-level="1">Medium</button>
+        <button class="difficulty" type="button" data-level="2">Hard</button>
+        <button class="difficulty" type="button" data-level="3">Impossible</button>
+      </nav>
+      <button id="menu-continue" class="action" type="button" hidden>Continue current puzzle</button>
+      <p class="menu-foot">One course per day · Complete a difficulty's five courses to earn its mark.</p>
+    </section>
+  </div>
   <main>
-    <p class="eyebrow">A tiny block puzzle</p>
+    <p class="eyebrow">Your daily puzzle</p>
     <h1>Block Buddy</h1>
-    <p class="intro">Push the wooden block onto the star. You can push it, but you can’t pull it!</p>
-    <section class="game-card" aria-label="Block Buddy game">
-      <div class="topline"><span id="level-label">Puzzle 1 of 5</span><span id="moves">Moves: 0</span></div>
-      <p id="status" aria-live="polite">Ready when you are!</p>
-      <div id="board" class="board" role="grid" aria-label="Puzzle board"></div>
+    <p class="intro">One fresh course each day. Push the block to the star, plan around obstacles, and keep your streak alive.</p>
+    <section class="card" aria-label="Block Buddy game">
+      <div class="level-top"><span id="level-name" class="level-name">Easy</span><span id="moves" class="move-count">Moves: 0</span></div>
+      <div class="course-nav" aria-label="Browse courses"><button id="course-prev" type="button" aria-label="Previous course">←</button><span id="course-position">Course 1 of 5</span><button id="course-next" type="button" aria-label="Next course">→</button></div>
+      <p id="record" class="record">Fastest: calculating… · Your score: 0 moves</p>
+      <div class="board-wrap">
+        <div id="board" class="board" role="grid" aria-label="Puzzle board"></div>
+        <div id="celebration" class="celebration" aria-hidden="true"></div>
+      </div>
+      <p id="status" class="status" aria-live="polite">Ready when you are!</p>
       <div class="controls">
-        <button id="undo" type="button">↶ Undo</button>
-        <button id="reset" type="button">↻ Start over</button>
-        <button id="next" type="button" hidden>Next puzzle →</button>
+        <button id="replay" class="action" type="button" hidden>▶ Replay saved path</button>
+        <button id="play-again" class="action primary" type="button" hidden>↻ Play this course again</button>
+        <button id="reset" class="action" type="button">↻ Start over</button>
       </div>
       <div class="mobile-controls" aria-label="Move controls">
-        <button type="button" data-dir="up" aria-label="Move up">↑</button>
-        <button type="button" data-dir="left" aria-label="Move left">←</button>
-        <button type="button" data-dir="down" aria-label="Move down">↓</button>
-        <button type="button" data-dir="right" aria-label="Move right">→</button>
+        <button class="action" type="button" data-dir="up" aria-label="Move up">↑</button>
+        <button class="action" type="button" data-dir="left" aria-label="Move left">←</button>
+        <button class="action" type="button" data-dir="down" aria-label="Move down">↓</button>
+        <button class="action" type="button" data-dir="right" aria-label="Move right">→</button>
       </div>
-      <p class="hint">Use the arrow keys or W A S D. R starts over.</p>
+      <p class="hint">Arrow keys or W A S D to move · ✦ opens gates · Red walls move each turn · R to restart</p>
     </section>
+    <p class="fine-print">Your streak is saved in this browser when you solve a puzzle each day.</p>
   </main>
   <script>
-    // # = wall, . = empty floor, G = goal
-    const scenarios = [
-      { name:"Around the corner", map:["######", "#....#", "#...G#", "#.B..#", "#P...#", "######"], player:{x:1,y:3}, box:{x:2,y:3} },
-      { name:"Up, up, and away", map:["######", "#.G..#", "#....#", "#.B..#", "#.P..#", "######"], player:{x:2,y:4}, box:{x:2,y:3} },
-      { name:"Straight across", map:["######", "#....#", "#....#", "#...G#", "#....#", "######"], player:{x:1,y:3}, box:{x:2,y:3} },
-      { name:"Find your way around", map:["######", "#....#", "#..#.#", "#...G#", "#....#", "######"], player:{x:2,y:4}, box:{x:2,y:3} },
-      { name:"Turn the corner", map:["######", "#....#", "#....#", "#....#", "#...G#", "######"], player:{x:1,y:2}, box:{x:2,y:2} }
+    const difficulties=["Easy","Medium","Hard","Impossible"];
+    const courseLayouts=[
+      {player:[1,3],box:[2,3],goal:[4,1],walls:[[[5,5]],[[1,1],[5,5],[3,1]],[[1,1],[5,5],[1,5],[3,1],[2,1]],[[1,1],[5,5],[1,5],[5,1],[3,5],[5,3],[2,5],[3,1]]]},
+      {player:[5,4],box:[4,4],goal:[2,2],walls:[[[1,5]],[[1,5],[5,1],[2,1]],[[1,5],[5,1],[1,1],[2,1],[4,2]],[[1,5],[5,1],[1,1],[5,5],[3,1],[4,1],[2,1],[4,2]]]},
+      {player:[3,5],box:[3,4],goal:[5,2],walls:[[[1,1]],[[1,1],[5,5],[3,1]],[[1,1],[5,5],[1,5],[3,1],[4,1]],[[1,1],[5,5],[1,5],[5,1],[2,1],[4,5],[3,1],[2,1]]]},
+      {player:[5,2],box:[4,2],goal:[2,5],walls:[[[1,1]],[[1,1],[5,5],[3,3]],[[1,1],[5,5],[1,5],[3,3],[4,3]],[[1,1],[5,5],[1,5],[5,1],[4,1],[4,5],[3,3],[4,3]]]},
+      {player:[1,4],box:[2,4],goal:[5,2],walls:[[[1,1]],[[1,1],[5,1],[3,1]],[[1,1],[5,1],[1,2],[2,2],[2,5],[3,5]],[[1,1],[5,1],[1,2],[2,2],[3,2],[4,2],[2,5],[3,5]]]}
     ];
+    const levels=[];
+    for(let difficulty=0;difficulty<4;difficulty++)for(let course=0;course<5;course++){
+      const layout=courseLayouts[course],size=difficulty===2?9:difficulty===3?11:7,offset=difficulty===2?1:difficulty===3?2:0;
+      const cells=Array.from({length:size},(_,y)=>Array.from({length:size},(_,x)=>(x===0||y===0||x===size-1||y===size-1)?"#":"."));
+      for(const [x,y] of layout.walls[difficulty])cells[y+offset][x+offset]="#";
+      const [px0,py0]=layout.player,[bx0,by0]=layout.box,[goalX0,goalY0]=layout.goal;
+      const protectedCells=new Set([[px0+offset,py0+offset],[bx0+offset,by0+offset],[goalX0+offset,goalY0+offset]].map(([x,y])=>`${x},${y}`));
+      if(difficulty===2){
+        const hardWalls=[
+          [[2,2],[3,2],[5,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[4,6],[5,6],[6,6]],
+          [[2,2],[4,2],[5,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[3,6],[5,6],[6,6]],
+          [[2,2],[3,2],[4,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[3,6],[4,6],[6,6]],
+          [[2,2],[3,2],[5,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[3,6],[4,6],[5,6]],
+          [[2,2],[4,2],[5,2],[6,2],[2,3],[6,3],[2,5],[6,5],[2,6],[3,6],[4,6],[6,6]]
+        ][course];
+        for(const [x,y] of hardWalls)if(!protectedCells.has(`${x},${y}`))cells[y][x]="#";
+      }
+      if(difficulty===3){
+        const impossibleWalls=[
+          [[3,3],[4,3],[6,3],[7,3],[3,4],[7,4],[3,6],[7,6],[3,7],[4,7],[6,7],[7,7],[2,5],[8,5]],
+          [[3,3],[5,3],[6,3],[7,3],[3,4],[7,4],[3,6],[7,6],[3,7],[5,7],[6,7],[7,7],[2,5],[8,5]],
+          [[3,3],[4,3],[5,3],[7,3],[3,4],[7,4],[3,6],[7,6],[3,7],[4,7],[5,7],[7,7],[2,4],[8,6]],
+          [[3,3],[4,3],[6,3],[7,3],[3,4],[7,4],[3,6],[7,6],[3,7],[4,7],[5,7],[6,7],[2,6],[8,4]],
+          [[3,3],[5,3],[6,3],[7,3],[3,4],[7,4],[3,6],[7,6],[3,7],[4,7],[6,7],[7,7],[2,4],[8,6]]
+        ][course];
+        for(const [x,y] of impossibleWalls)if(!protectedCells.has(`${x},${y}`))cells[y][x]="#";
+      }
+      const gx=goalX0+offset,gy=goalY0+offset;cells[gy][gx]="G";
+      const switchBase=(difficulty>=2&&course===0)?[1,2]:(difficulty===3&&course===2)?[1,4]:null;
+      const gateBase=(difficulty>=2&&course===0)?[4,2]:(difficulty===3&&course===2)?[4,3]:null;
+      const switchPos=switchBase?[switchBase[0]+offset,switchBase[1]+offset]:null;
+      const gatePos=gateBase?[gateBase[0]+offset,gateBase[1]+offset]:null;
+      if(switchPos){const [sx,sy]=switchPos;cells[sy][sx]="S";}
+      if(gatePos){const [dx,dy]=gatePos;cells[dy][dx]="D";}
+      const track=difficulty===2?[2,3,4,5,6,5,4,3].map(x=>({x,y:4})):difficulty===3?[2,3,4,5,6,7,8,7,6,5,4,3].map(x=>({x,y:5})):null;
+      levels.push({difficulty,course,name:difficulties[difficulty],map:cells.map(row=>row.join("")),player:{x:px0+offset,y:py0+offset},box:{x:bx0+offset,y:by0+offset},switchPos,gatePos,track});
+    }
     const board = document.querySelector("#board");
     const status = document.querySelector("#status");
     const movesLabel = document.querySelector("#moves");
-    const levelLabel = document.querySelector("#level-label");
-    const nextButton = document.querySelector("#next");
-    let levelIndex = 0, level, player, box, moves, history, won;
-    const start = () => {
-      level = scenarios[levelIndex].map;
-      player = {...scenarios[levelIndex].player}; box = {...scenarios[levelIndex].box};
-      moves = 0; history = []; won = false;
-      status.textContent = "Ready when you are!";
-      levelLabel.textContent = `Puzzle ${levelIndex + 1} of ${scenarios.length}: ${scenarios[levelIndex].name}`;
-      nextButton.hidden = true;
-      render();
-    };
-    const isWall = (x, y) => !level[y] || level[y][x] === undefined || level[y][x] === "#";
-    function render() {
+    const record = document.querySelector("#record");
+    const levelName = document.querySelector("#level-name");
+    const streakLabel = document.querySelector("#streak-count");
+    const soundButton = document.querySelector("#sound");
+    const soundIcon = document.querySelector("#sound-icon");
+    const levelMenu = document.querySelector("#level-menu");
+    const continueButton = document.querySelector("#menu-continue");
+    const resetButton=document.querySelector("#reset");
+    const difficultyList=document.querySelector("#difficulty-list");
+    const coursePosition=document.querySelector("#course-position"),coursePrev=document.querySelector("#course-prev"),courseNext=document.querySelector("#course-next");
+    const replayButton=document.querySelector("#replay"),playAgainButton=document.querySelector("#play-again");
+    const menuTitle=document.querySelector("#menu-title"),menuCopy=document.querySelector("#menu-copy");
+    let levelIndex=0,level,player,box,moves,won,fastestMoves,hasStarted=false,gateOpen=false,movingTrack=null,movingPhase=0,dailyState=null,practiceMode=false,reviewMode=false,reviewSnapshot=null,moveHistory=[],historyComplete=true,replayTimer=null,replayTrailActive=false,replayPlayerTrail=new Set(),replayBoxTrail=new Set();
+    function getSaved(key) { try { return localStorage.getItem(key); } catch { return null; } }
+    function saveValue(key,value) { try { localStorage.setItem(key,value); return true; } catch { return false; } }
+    let soundOn = getSaved("blockBuddySound") !== "off";
+    let audioContext;
+
+    function localDateKey(date = new Date()) {
+      return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+    }
+    function readTodayDaily() {
+      try { const saved=JSON.parse(getSaved("blockBuddyDaily")||"null"); return saved?.date===localDateKey()?saved:null; }
+      catch { return null; }
+    }
+    function savedCourses() {
+      let list=[];
+      try { const stored=JSON.parse(getSaved("blockBuddyCourses")||"[]"); if(Array.isArray(stored))list=stored; }
+      catch { /* Missing course history simply means no completed courses yet. */ }
+      for(const difficulty of completedDifficulties())for(let course=0;course<5;course++)if(!list.includes(`${difficulty}-${course}`))list.push(`${difficulty}-${course}`);
+      return list;
+    }
+    function savedCourseArchives() {
+      try { const stored=JSON.parse(getSaved("blockBuddyCourseArchives")||"{}"); return stored&&typeof stored==="object"?stored:{}; }
+      catch { return {}; }
+    }
+    function captureMoveState() { return {player:{...player},box:{...box},moves,gateOpen,movingPhase}; }
+    function cloneMoveHistory(history) { return Array.isArray(history)?history.map(step=>({...step,player:{...step.player},box:{...step.box}})):[]; }
+    function updateReplayControls() {
+      const history=reviewMode?reviewSnapshot?.history:moveHistory;
+      const canReplay=!!((reviewMode&&reviewSnapshot?.completed)||(practiceMode&&won))&&historyComplete&&history?.length>1;
+      replayButton.hidden=!(reviewMode&&reviewSnapshot?.completed)&&!(practiceMode&&won);
+      replayButton.disabled=!!replayTimer||!canReplay;
+      replayButton.textContent=replayTimer?"Replaying…":reviewMode?"▶ Replay saved path":"▶ Replay this run";
+      replayButton.title=canReplay?"Watch the moves used to solve this course":"A complete move history is not saved for this course yet.";
+      playAgainButton.hidden=!(reviewMode&&reviewSnapshot?.completed);
+    }
+    function nextUnfinishedCourse(difficulty) {
+      const done=savedCourses();
+      for(let course=0;course<5;course++)if(!done.includes(`${difficulty}-${course}`))return course;
+      return -1;
+    }
+    function saveDailyProgress() {
+      if(practiceMode||reviewMode||!dailyState||dailyState.completed)return;
+      dailyState={...dailyState,moves,player:{...player},box:{...box},gateOpen,movingPhase,historyComplete,history:cloneMoveHistory(moveHistory)};
+      saveValue("blockBuddyDaily",JSON.stringify(dailyState));
+    }
+    function daysBetween(first, second) {
+      return Math.round((Date.parse(`${second}T12:00:00`) - Date.parse(`${first}T12:00:00`)) / 86400000);
+    }
+    function readStreak() {
+      try {
+        const saved = JSON.parse(getSaved("blockBuddyStreak") || "{}");
+        const age = saved.lastDate ? daysBetween(saved.lastDate, localDateKey()) : Infinity;
+        return age <= 1 ? Number(saved.days) || 0 : 0;
+      } catch { return 0; }
+    }
+    function updateStreak() {
+      const today = localDateKey();
+      try {
+        const saved = JSON.parse(getSaved("blockBuddyStreak") || "{}");
+        const gap = saved.lastDate ? daysBetween(saved.lastDate, today) : Infinity;
+        if (gap === 0) return readStreak();
+        const days = gap === 1 ? (Number(saved.days) || 0) + 1 : 1;
+        saveValue("blockBuddyStreak", JSON.stringify({days,lastDate:today}));
+        return days;
+      } catch { return 0; }
+    }
+    function showStreak(days) { streakLabel.textContent = `${days} ${days === 1 ? "day" : "days"} streak`; }
+    function movingAt(track,phase) { return track?.[phase]||null; }
+    function isWall(x,y,map=level,opened=gateOpen,phase=movingPhase,track=movingTrack) {
+      const moving=movingAt(track,phase);
+      return !map[y]||map[y][x]===undefined||map[y][x]==="#"||(map[y][x]==="D"&&!opened)||(moving&&moving.x===x&&moving.y===y);
+    }
+    function shortestSolve(map,startPlayer,startBox,initiallyOpen=false,track=null) {
+      const queue=[{p:startPlayer,b:startBox,n:0,g:initiallyOpen,t:0}];
+      const seen=new Set([`${startPlayer.x},${startPlayer.y}|${startBox.x},${startBox.y}|${initiallyOpen}|0`]);
+      const steps = [[0,-1],[0,1],[-1,0],[1,0]];
+      for (let head=0; head<queue.length; head++) {
+        const current = queue[head];
+        if (map[current.b.y][current.b.x] === "G") return current.n;
+        for (const [dx,dy] of steps) {
+          const px=current.p.x+dx, py=current.p.y+dy;
+          if (isWall(px,py,map,current.g,current.t,track)) continue;
+          let bx=current.b.x, by=current.b.y;
+          if (px===bx && py===by) {
+            bx+=dx; by+=dy;
+            if (isWall(bx,by,map,current.g,current.t,track)) continue;
+          }
+          const opened=current.g||map[py][px]==="S"||map[by][bx]==="S";
+          let nextT=track?(current.t+1)%track.length:0;const nextWall=movingAt(track,nextT);
+          if(nextWall&&((nextWall.x===px&&nextWall.y===py)||(nextWall.x===bx&&nextWall.y===by)))nextT=current.t;
+          const key=`${px},${py}|${bx},${by}|${opened}|${nextT}`;
+          if(!seen.has(key)){seen.add(key);queue.push({p:{x:px,y:py},b:{x:bx,y:by},n:current.n+1,g:opened,t:nextT});}
+        }
+      }
+      return null;
+    }
+    function playTone(frequency, duration=.07, delay=0, volume=.025, wave="sine") {
+      if (!soundOn || !window.AudioContext) return;
+      try {
+        audioContext ||= new AudioContext();
+        if (audioContext.state === "suspended") audioContext.resume();
+        const now=audioContext.currentTime+delay, oscillator=audioContext.createOscillator(), gain=audioContext.createGain();
+        oscillator.type=wave; oscillator.frequency.setValueAtTime(frequency,now);
+        gain.gain.setValueAtTime(.0001,now); gain.gain.exponentialRampToValueAtTime(volume,now+.012); gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
+        oscillator.connect(gain); gain.connect(audioContext.destination); oscillator.start(now); oscillator.stop(now+duration+.02);
+      } catch { /* Sound is optional; the puzzle still works if audio is unavailable. */ }
+    }
+    function winSound() { [523.25,659.25,783.99,1046.5].forEach((f,i)=>playTone(f,.2,i*.11,.035,"triangle")); }
+    function render(pushed=false) {
       board.replaceChildren();
-      for (let y = 0; y < level.length; y++) for (let x = 0; x < level[y].length; x++) {
-        const cell = document.createElement("div");
-        cell.className = "cell"; cell.setAttribute("role", "gridcell");
+      board.style.gridTemplateColumns=`repeat(${level[0].length},minmax(0,1fr))`;
+      for (let y=0;y<level.length;y++) for (let x=0;x<level[y].length;x++) {
+        const cell=document.createElement("div"); cell.className="cell"; cell.setAttribute("role","gridcell");
+        const positionKey=`${x},${y}`;
+        if(replayTrailActive&&replayPlayerTrail.has(positionKey))cell.classList.add("trail-player");
+        if(replayTrailActive&&replayBoxTrail.has(positionKey))cell.classList.add("trail-box");
         if (isWall(x,y)) cell.classList.add("wall");
-        if (level[y][x] === "G") cell.classList.add("goal");
-        if (box.x === x && box.y === y) { const block = document.createElement("span"); block.className = "box"; block.setAttribute("aria-label", "wooden block"); cell.append(block); }
-        if (player.x === x && player.y === y) { const buddy = document.createElement("span"); buddy.className = "player" + (level[y][x] === "G" ? " on-goal" : ""); buddy.setAttribute("aria-label", "player"); cell.append(buddy); }
+        if (level[y][x]==="G") cell.classList.add("goal");
+        if (level[y][x]==="S") cell.classList.add("switch");
+        if (level[y][x]==="D") cell.classList.add(gateOpen?"gate-open":"gate");
+        const moving=movingAt(movingTrack,movingPhase);if(moving&&moving.x===x&&moving.y===y)cell.classList.add("moving-wall");
+        if (box.x===x && box.y===y) { const block=document.createElement("span"); block.className="box"; block.setAttribute("aria-label","wooden block"); cell.append(block); }
+        if (player.x===x && player.y===y) { const buddy=document.createElement("span"); buddy.className="player"+(level[y][x]==="G"?" on-goal":""); buddy.setAttribute("aria-label","player"); cell.append(buddy); }
         board.append(cell);
       }
-      movesLabel.textContent = `Moves: ${moves}`;
+      board.classList.toggle("is-won",won); board.classList.toggle("box-pushed",pushed);
+      movesLabel.textContent=`Moves: ${moves}`;
+      record.textContent=`Fastest: ${fastestMoves??"—"} moves · Your score: ${moves} moves`;
     }
-    function move(dx, dy) {
-      if (won) return;
-      const nx = player.x + dx, ny = player.y + dy;
-      if (isWall(nx,ny)) return;
-      const pushing = nx === box.x && ny === box.y;
-      if (pushing && (isWall(box.x + dx, box.y + dy) || (box.x + dx === player.x && box.y + dy === player.y))) return;
-      history.push({ player: {...player}, box: {...box}, moves });
-      if (pushing) box = { x: box.x + dx, y: box.y + dy };
-      player = { x:nx, y:ny }; moves++;
-      if (level[box.y][box.x] === "G") {
-        won = true;
-        const lastLevel = levelIndex === scenarios.length - 1;
-        status.textContent = lastLevel ? `All 5 puzzles solved! Amazing! 🎉` : `Puzzle solved in ${moves} moves! 🎉`;
-        nextButton.textContent = lastLevel ? "Play again ↻" : "Next puzzle →";
-        nextButton.hidden = false;
-      }
-      else status.textContent = pushing ? "Nice push!" : "Keep going!";
+    function applyMoveState(step,trace=false) {
+      player={...step.player};box={...step.box};moves=Number(step.moves)||0;gateOpen=!!step.gateOpen;movingPhase=Number(step.movingPhase)||0;
+      if(trace){replayPlayerTrail.add(`${player.x},${player.y}`);replayBoxTrail.add(`${box.x},${box.y}`);}
       render();
     }
-    function undo() {
-      if (!history.length || won) return;
-      const previous = history.pop(); player = previous.player; box = previous.box; moves = previous.moves;
-      status.textContent = "Undid that move."; render();
+    function stopReplay(showFinal=true) {
+      if(replayTimer){clearInterval(replayTimer);replayTimer=null;}
+      const history=reviewMode?reviewSnapshot?.history:moveHistory;
+      if(showFinal&&replayTrailActive&&history?.length>1){for(const step of history){replayPlayerTrail.add(`${step.player.x},${step.player.y}`);replayBoxTrail.add(`${step.box.x},${step.box.y}`);}applyMoveState(history[history.length-1]);}
+      if(!showFinal){replayTrailActive=false;replayPlayerTrail.clear();replayBoxTrail.clear();}
+      updateReplayControls();
     }
-    const directions = { ArrowUp:[0,-1], w:[0,-1], ArrowDown:[0,1], s:[0,1], ArrowLeft:[-1,0], a:[-1,0], ArrowRight:[1,0], d:[1,0] };
-    addEventListener("keydown", event => {
-      if (event.key.toLowerCase() === "r") { start(); return; }
-      const direction = directions[event.key] || directions[event.key.toLowerCase()];
-      if (direction) { event.preventDefault(); move(...direction); }
-      if (event.key === "Backspace" || event.key.toLowerCase() === "z") { event.preventDefault(); undo(); }
-    });
-    document.querySelectorAll("[data-dir]").forEach(button => button.addEventListener("click", () => {
-      const movesByDir = { up:[0,-1], down:[0,1], left:[-1,0], right:[1,0] }; move(...movesByDir[button.dataset.dir]);
-    }));
-    document.querySelector("#undo").addEventListener("click", undo);
-    document.querySelector("#reset").addEventListener("click", start);
-    nextButton.addEventListener("click", () => {
-      if (levelIndex === scenarios.length - 1) levelIndex = 0;
-      else levelIndex++;
+    function replayPath() {
+      const history=reviewMode?reviewSnapshot?.history:moveHistory;
+      if(replayTimer||!historyComplete||!history||history.length<2)return;
+      const frames=cloneMoveHistory(history);let frame=0;
+      replayTrailActive=true;replayPlayerTrail.clear();replayBoxTrail.clear();
+      status.textContent=`Replaying the ${frames.length-1} moves…`;status.classList.remove("win");applyMoveState(frames[0],true);updateReplayControls();
+      replayTimer=setInterval(()=>{
+        frame++;applyMoveState(frames[frame],true);
+        if(frame>=frames.length-1){clearInterval(replayTimer);replayTimer=null;status.textContent="Replay complete — this is the path you took.";status.classList.add("win");updateReplayControls();}
+      },420);
+      updateReplayControls();
+    }
+    function start() {
+      stopReplay(false);
+      const entry=levels[levelIndex];
+      level=entry.map;movingTrack=entry.track;
+      const savedDaily=!practiceMode&&dailyState?.date===localDateKey()&&dailyState.difficulty===entry.difficulty&&dailyState.course===entry.course;
+      player=savedDaily&&dailyState.player?{...dailyState.player}:{...entry.player};
+      box=savedDaily&&dailyState.box?{...dailyState.box}:{...entry.box};
+      moves=savedDaily?Number(dailyState.moves)||0:0;won=false;gateOpen=savedDaily&&!!dailyState.gateOpen;movingPhase=savedDaily&&Number.isInteger(dailyState.movingPhase)?dailyState.movingPhase:0;
+      moveHistory=savedDaily&&Array.isArray(dailyState.history)?cloneMoveHistory(dailyState.history):[captureMoveState()];
+      historyComplete=savedDaily?(Array.isArray(dailyState.history)?dailyState.historyComplete!==false:moves===0):true;
+      if(reviewMode&&reviewSnapshot){player={...reviewSnapshot.player};box={...reviewSnapshot.box};moves=Number(reviewSnapshot.moves)||0;gateOpen=!!reviewSnapshot.gateOpen;movingPhase=Number(reviewSnapshot.movingPhase)||0;won=true;moveHistory=cloneMoveHistory(reviewSnapshot.history);historyComplete=!!reviewSnapshot.historyComplete;}
+      fastestMoves=shortestSolve(level,entry.player,entry.box,false,movingTrack);
+      levelName.textContent=`${entry.name} · Course ${entry.course+1} of 5${practiceMode?" · Practice":""}`;
+      coursePosition.textContent=`${entry.name} · Course ${entry.course+1} of 5${practiceMode?" · Practice":""}`;
+      coursePrev.disabled=entry.course===0;courseNext.disabled=entry.course===4;
+      record.textContent=`Fastest: ${fastestMoves ?? "—"} moves · Your score: ${moves} moves`;
+      status.textContent=reviewMode?"Completed course — read-only review.":practiceMode?"Practice run — your saved daily result stays safe.":"Ready when you are!"; status.classList.toggle("win",reviewMode);
+      resetButton.disabled=reviewMode;document.querySelector("#celebration").replaceChildren();
+      if(dailyState?.completed&&!practiceMode&&!reviewMode&&dailyState.difficulty===entry.difficulty&&dailyState.course===entry.course){moves=Number(dailyState.moves)||0;player={...dailyState.player};box={...dailyState.box};gateOpen=!!dailyState.gateOpen;movingPhase=Number(dailyState.movingPhase)||0;won=true;status.textContent="Today's course is already complete. Come back tomorrow for the next one.";status.classList.add("win");resetButton.disabled=true;}
+      updateReplayControls();
+      saveDailyProgress();render();
+    }
+    function celebrate() {
+      const layer=document.querySelector("#celebration"); layer.replaceChildren();
+      for (let i=0;i<18;i++) {
+        const bit=document.createElement("span"); bit.className="confetti";
+        bit.style.setProperty("--x",`${8+Math.random()*84}%`); bit.style.setProperty("--h",`${35+Math.random()*210}`); bit.style.setProperty("--d",`${Math.random()*.2}s`);
+        layer.append(bit);
+      }
+    }
+    function finishLevel() {
+      won=true;
+      const entry=levels[levelIndex],key=`${entry.difficulty}-${entry.course}`;
+      if(practiceMode){
+        const archives=savedCourseArchives(),archive=archives[key]||{};
+        archive.practiceHistory=cloneMoveHistory(moveHistory);archive.practiceHistoryComplete=historyComplete;archive.practiceMoves=moves;archives[key]=archive;
+        saveValue("blockBuddyCourseArchives",JSON.stringify(archives));
+        status.textContent=`Practice solved in ${moves} moves! Your saved daily result stays safe.`;status.classList.add("win");resetButton.disabled=false;render();celebrate();winSound();updateReplayControls();return;
+      }
+      const away=Math.max(0,moves-(fastestMoves ?? moves));
+      const detail=away===0?"Perfect fastest solve!":`You were only ${away} ${away===1?"move":"moves"} above the fastest solve.`;
+      status.textContent=`Puzzle solved! ${detail}`; status.classList.add("win");
+      const days=updateStreak(); showStreak(days);
+      const courses=savedCourses();
+      if(!courses.includes(key))courses.push(key);
+      saveValue("blockBuddyCourses",JSON.stringify(courses));
+      const archives=savedCourseArchives();archives[key]={...(archives[key]||{}),moves,player:{...player},box:{...box},gateOpen,movingPhase,history:cloneMoveHistory(moveHistory),historyComplete,completed:true};
+      saveValue("blockBuddyCourseArchives",JSON.stringify(archives));
+      dailyState={...dailyState,date:localDateKey(),difficulty:entry.difficulty,course:entry.course,completed:true,moves,player:{...player},box:{...box},gateOpen,movingPhase,history:cloneMoveHistory(moveHistory),historyComplete};
+      saveValue("blockBuddyDaily",JSON.stringify(dailyState));
+      if(entry.course===4){const completed=completedDifficulties();if(!completed.includes(entry.difficulty))completed.push(entry.difficulty);saveValue("blockBuddyCompleted",JSON.stringify(completed));}
+      resetButton.disabled=true;
+      render(); celebrate(); winSound();
+      showDifficultyPicker(entry.course===4?entry.difficulty:null);levelMenu.hidden=false;
+    }
+    function move(dx,dy) {
+      if (won||reviewMode||replayTimer) return;
+      const nx=player.x+dx, ny=player.y+dy;
+      if (isWall(nx,ny)) return;
+      const pushing=nx===box.x && ny===box.y;
+      if (pushing && isWall(box.x+dx,box.y+dy)) return;
+      if (pushing) box={x:box.x+dx,y:box.y+dy};
+      player={x:nx,y:ny}; moves++;
+      const nextPhase=movingTrack?(movingPhase+1)%movingTrack.length:0,nextWall=movingAt(movingTrack,nextPhase);
+      const wallBlocked=nextWall&&((nextWall.x===player.x&&nextWall.y===player.y)||(nextWall.x===box.x&&nextWall.y===box.y));
+      if(!wallBlocked)movingPhase=nextPhase;
+      const hitSwitch=level[player.y][player.x]==="S"||level[box.y][box.x]==="S",openedNow=!gateOpen&&hitSwitch;
+      if(openedNow){gateOpen=true;status.textContent="Switch activated — the gate is open!";playTone(760,.2,0,.03,"triangle");}
+      moveHistory.push(captureMoveState());
+      if (level[box.y][box.x]==="G") finishLevel();
+      else {
+        saveDailyProgress();
+        if(!openedNow)status.textContent=wallBlocked?"The moving wall pauses when you occupy its path.":pushing?"Nice push!":"Keep going!";
+        playTone(pushing?185:330,.055,0,.012); render(pushing);
+      }
+    }
+    showStreak(readStreak());
+    function updateSoundButton() {
+      soundButton.setAttribute("aria-pressed",String(soundOn));
+      soundButton.setAttribute("aria-label",soundOn?"Turn sound off":"Turn sound on");
+      soundButton.title=soundOn?"Sound on":"Sound off";
+      soundIcon.textContent=soundOn?"🔊":"🔇";
+    }
+    function completedDifficulties() {
+      try { return JSON.parse(getSaved("blockBuddyCompleted")||"[]").filter(n=>Number.isInteger(n)&&n>=0&&n<4); }
+      catch { return []; }
+    }
+    function showDifficultyPicker(completedNow=null) {
+      if(dailyState?.date!==localDateKey())dailyState=null;
+      const active=dailyState,finalCourse=completedNow!==null;
+      difficultyList.hidden=false;
+      menuTitle.textContent=finalCourse?"Congratulations!":active?.completed?"Daily puzzle complete!":active?"Today's puzzle":"Choose your difficulty";
+      menuCopy.textContent=finalCourse?`${difficulties[completedNow]} complete — all five courses cleared. Come back tomorrow for another daily course.`:active?.completed?"Today's course is complete. Come back tomorrow to continue your streak. Choose a difficulty to play a course again.":active?`${difficulties[active.difficulty]} · Course ${active.course+1} of 5. Continue today's puzzle, or choose another course to practice.`:"Choose a difficulty to start its next course. Use the arrows to play through courses again.";
+      continueButton.hidden=!(active&&!active.completed);
+      continueButton.textContent="Continue today's puzzle";
+      const completed=completedDifficulties();
+      document.querySelectorAll(".difficulty").forEach(button=>{
+        const index=Number(button.dataset.level),done=completed.includes(index);
+        button.classList.toggle("completed",done);
+        button.classList.toggle("active",!!active&&!active.completed&&active.difficulty===index);
+        button.innerHTML=`${difficulties[index]}${done?'<span class="completion" aria-hidden="true">✓</span>':''}`;
+        button.setAttribute("aria-label",done?`${difficulties[index]}, completed`:difficulties[index]);
+        button.disabled=false;
+      });
+    }
+    function openCourse(difficulty,course) {
+      levelIndex=difficulty*5+course;
+      const key=`${difficulty}-${course}`,completed=savedCourses().includes(key),archive=savedCourseArchives()[key];
+      reviewMode=completed;practiceMode=!completed;reviewSnapshot=null;
+      if(completed){
+        const entry=levels[levelIndex],goalY=entry.map.findIndex(row=>row.includes("G")),goalX=entry.map[goalY].indexOf("G"),history=archive?.history?.length?archive.history:archive?.practiceHistory||[];
+        reviewSnapshot={completed:true,player:archive?.player||entry.player,box:archive?.box||{x:goalX,y:goalY},moves:archive?.moves||archive?.practiceMoves||0,gateOpen:!!archive?.gateOpen,movingPhase:archive?.movingPhase||0,history:cloneMoveHistory(history),historyComplete:archive?.history?archive.historyComplete!==false:!!archive?.practiceHistoryComplete};
+      }
+      hasStarted=true;start();levelMenu.hidden=true;
+    }
+    function openMenu() { stopReplay();if(dailyState?.date!==localDateKey())dailyState=null;showDifficultyPicker();levelMenu.hidden=false; }
+    function closeMenu() { if (!hasStarted||dailyState?.completed&&!practiceMode&&!reviewMode) return; levelMenu.hidden=true; document.querySelector("#menu-open").focus(); }
+    function chooseDifficulty(difficulty) {
+      if(dailyState?.date===localDateKey()){
+        if(dailyState.difficulty===difficulty&&!dailyState.completed){levelIndex=difficulty*5+dailyState.course;practiceMode=false;reviewMode=false;reviewSnapshot=null;start();closeMenu();}
+        else openCourse(difficulty,dailyState.difficulty===difficulty?dailyState.course:0);
+        return;
+      }
+      if(completedDifficulties().includes(difficulty)){openCourse(difficulty,0);return;}
+      const course=nextUnfinishedCourse(difficulty);
+      if(course<0){openCourse(difficulty,0);return;}
+      levelIndex=difficulty*5+course;practiceMode=false;reviewMode=false;reviewSnapshot=null;dailyState={date:localDateKey(),difficulty,course,completed:false};
+      saveValue("blockBuddyDaily",JSON.stringify(dailyState));hasStarted=true;start();closeMenu();
+    }
+    function startOver() {
+      if(reviewMode)return;
+      if(dailyState?.completed&&!practiceMode)return;
+      if(practiceMode){start();return;}
+      if(dailyState)dailyState={date:localDateKey(),difficulty:levels[levelIndex].difficulty,course:levels[levelIndex].course,completed:false};
       start();
+    }
+    function browseCourse(step) {
+      const entry=levels[levelIndex],course=Math.max(0,Math.min(4,entry.course+step));
+      if(course!==entry.course)openCourse(entry.difficulty,course);
+    }
+    function continueToday() {
+      if(dailyState&&!dailyState.completed&&dailyState.date===localDateKey()){
+        levelIndex=dailyState.difficulty*5+dailyState.course;practiceMode=false;reviewMode=false;reviewSnapshot=null;start();
+      }
+      closeMenu();
+    }
+    dailyState=readTodayDaily();
+    if(dailyState){levelIndex=dailyState.difficulty*5+dailyState.course;hasStarted=true;}
+    showDifficultyPicker();
+    updateSoundButton();
+    const directions={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]};
+    addEventListener("keydown",event=>{
+      if (!levelMenu.hidden) { if (event.key==="Escape"&&hasStarted&&(!dailyState?.completed||reviewMode||practiceMode)) closeMenu(); return; }
+      if (event.key.toLowerCase()==="r") { if((!dailyState?.completed||practiceMode)&&!reviewMode)startOver(); return; }
+      const direction=directions[event.key]||directions[event.key.toLowerCase()];
+      if (direction) { event.preventDefault(); move(...direction); }
+    });
+    document.querySelectorAll("[data-dir]").forEach(button=>button.addEventListener("click",()=>{
+      const dirs={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}; move(...dirs[button.dataset.dir]);
+    }));
+    document.querySelectorAll(".difficulty").forEach(button=>button.addEventListener("click",()=>chooseDifficulty(Number(button.dataset.level))));
+    resetButton.addEventListener("click",startOver);
+    replayButton.addEventListener("click",replayPath);
+    soundButton.addEventListener("click",()=>{ soundOn=!soundOn; saveValue("blockBuddySound",soundOn?"on":"off"); updateSoundButton(); if(soundOn) playTone(523,.1); });
+    document.querySelector("#menu-open").addEventListener("click",openMenu);
+    continueButton.addEventListener("click",continueToday);
+    coursePrev.addEventListener("click",()=>browseCourse(-1));
+    courseNext.addEventListener("click",()=>browseCourse(1));
+    document.querySelector("#play-again").addEventListener("click",()=>{
+      if(!reviewMode||!reviewSnapshot?.completed)return;
+      practiceMode=true;reviewMode=false;reviewSnapshot=null;start();levelMenu.hidden=true;
     });
     start();
   </script>
