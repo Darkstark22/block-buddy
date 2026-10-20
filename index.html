@@ -92,11 +92,17 @@
     .tutorial-face-eyes { position:absolute; top:31%; left:25%; display:flex; width:50%; justify-content:space-between; }
     .tutorial-face-eyes i { width:3px; height:5px; border-radius:50%; background:#253047; }
     .tutorial-face-mouth { position:absolute; top:53%; left:37%; width:26%; height:17%; border-bottom:2px solid #253047; border-radius:0 0 50% 50%; }
-    .tutorial-goodluck { display:flex; align-items:center; gap:9px; padding:9px 11px; border:1px solid #dce5fa; border-radius:14px; background:linear-gradient(110deg,#f7f9ff,#fff); }
-    .tutorial-goodluck-buddy { position:relative; display:block; flex:none; width:38px; height:38px; border:3px solid #6387db; border-radius:50%; background:radial-gradient(circle at 32% 25%,#fff 0,#e4ebfc 70%); box-shadow:inset 0 -3px 5px #6387db20; }
-    .tutorial-goodluck-copy { display:grid; gap:1px; text-align:left; }
-    .tutorial-goodluck-copy strong { color:#30456d; font-size:.88rem; }
-    .tutorial-goodluck-copy span { color:var(--muted); font-size:.76rem; line-height:1.3; }
+    .tutorial-goodluck { position:relative; display:grid; min-height:210px; place-items:center; align-content:center; gap:10px; overflow:hidden; padding:14px; border:1px solid #dce5fa; border-radius:18px; background:radial-gradient(circle at 50% 35%,#fff 0,#f5f8ff 72%); text-align:center; }
+    .tutorial-goodluck::before { position:absolute; inset:12px; border:1px dashed #dce5fa; border-radius:13px; content:""; pointer-events:none; }
+    .tutorial-goodluck-buddy { position:relative; z-index:1; display:block; width:104px; height:104px; border:5px solid #6387db; border-radius:50%; background:radial-gradient(circle at 32% 23%,#fff 0,#edf2ff 45%,#dbe5ff 100%); box-shadow:inset 0 -6px 10px #6387db20,0 10px 24px #6387db30; animation:tutorial-buddy-bob 1.5s ease-in-out infinite; }
+    .tutorial-goodluck-buddy .tutorial-face-eyes { top:31%; }
+    .tutorial-goodluck-buddy .tutorial-face-eyes i { width:8px; height:11px; }
+    .tutorial-goodluck-buddy .tutorial-face-mouth { top:53%; left:34%; width:32%; height:22%; border-bottom-width:5px; }
+    .tutorial-goodluck-copy { position:relative; z-index:1; display:grid; gap:3px; text-align:center; }
+    .tutorial-goodluck-copy strong { color:#30456d; font-size:1.15rem; letter-spacing:-.02em; }
+    .tutorial-goodluck-copy span { color:#68758c; font-size:.8rem; line-height:1.35; }
+    @keyframes tutorial-buddy-bob { 0%,100% { transform:translateY(2px) rotate(-3deg); } 50% { transform:translateY(-4px) rotate(3deg); } }
+    @media (prefers-reduced-motion:reduce) { .tutorial-goodluck-buddy { animation:none; } }
     .tutorial-box-token { width:68%; height:68%; border-radius:5px; background:#c5a56d; box-shadow:inset 0 -3px #cc9147; }
     .tutorial-practice-copy { display:grid; gap:10px; }
     .tutorial-controls { display:grid; grid-template-columns:repeat(3,48px); grid-template-rows:repeat(2,46px); gap:5px; width:max-content; touch-action:manipulation; }
@@ -329,7 +335,7 @@
             <div class="tutorial-practice-copy">
               <div class="tutorial-goodluck" role="note" aria-label="Good luck">
                 <span class="tutorial-goodluck-buddy" aria-hidden="true"><span class="tutorial-face-eyes"><i></i><i></i></span><span class="tutorial-face-mouth"></span></span>
-                <span class="tutorial-goodluck-copy"><strong>Good luck!</strong><span>Push the block right onto the star.</span></span>
+                <span class="tutorial-goodluck-copy"><strong>You’ve got this!</strong><span>Push the block right onto the star. Your buddy is cheering you on!</span></span>
               </div>
               <div class="tutorial-controls" role="group" aria-label="Tap these arrows to move your buddy">
                 <button type="button" data-tutorial-dir="up" aria-label="Practice move up">↑</button><button type="button" data-tutorial-dir="left" aria-label="Practice move left">←</button><button type="button" data-tutorial-dir="down" aria-label="Practice move down">↓</button><button type="button" data-tutorial-dir="right" aria-label="Practice move right">→</button>
