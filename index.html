@@ -455,6 +455,7 @@
     let buddyStyle=loadBuddyStyle(),shopReturnFocus=null;
     let guideReturnToMenu=false,guideTab="instructions",tutorialStep=0,tutorialMoves=0,tutorialWon=false,tutorialRequired=getSaved("blockBuddyTutorialSeen")!=="true",tutorialPlayer={x:1,y:2},tutorialBox={x:2,y:2};
     let levelIndex=0,level,player,box,moves,won,fastestMoves,hasStarted=false,gateOpen=false,movingTrack=null,movingPhase=0,dailyState=null,practiceMode=false,reviewMode=false,reviewSnapshot=null,moveHistory=[],historyComplete=true,replayTimer=null,replayTrailActive=false,replayPlayerTrail=new Set(),replayBoxTrail=new Set();
+    let boardCells=[],boardLayoutKey="",playerToken=null,boxToken=null,renderedBuddyStyle="";
     function getSaved(key) { try { return localStorage.getItem(key); } catch { return null; } }
     function saveValue(key,value) { try { localStorage.setItem(key,value); return true; } catch { return false; } }
     let soundOn = getSaved("blockBuddySound") !== "off";
@@ -645,10 +646,9 @@
       return null;
     }
     function playTone(frequency, duration=.07, delay=0, volume=.025, wave="sine") {
-      if (!soundOn || !window.AudioContext) return;
+      const AudioContextClass=window.AudioContext||window.webkitAudioContext;
+      if (!soundOn || !AudioContextClass) return;
       try {
-        const AudioContextClass=window.AudioContext||window.webkitAudioContext;
-        if(!AudioContextClass)return;
         audioContext ||= new AudioContextClass();
         if (audioContext.state === "suspended") audioContext.resume();
         const now=audioContext.currentTime+delay, oscillator=audioContext.createOscillator(), gain=audioContext.createGain();
@@ -659,22 +659,36 @@
     }
     function winSound() { [523.25,659.25,783.99,1046.5].forEach((f,i)=>playTone(f,.2,i*.11,.035,"triangle")); }
     function render(pushed=false) {
-      board.replaceChildren();
-      board.style.gridTemplateColumns=`repeat(${level[0].length},minmax(0,1fr))`;
-      for (let y=0;y<level.length;y++) for (let x=0;x<level[y].length;x++) {
-        const cell=document.createElement("div"); cell.className="cell"; cell.setAttribute("role","gridcell");
-        const positionKey=`${x},${y}`;
-        if(replayTrailActive&&replayPlayerTrail.has(positionKey))cell.classList.add("trail-player");
-        if(replayTrailActive&&replayBoxTrail.has(positionKey))cell.classList.add("trail-box");
-        if (isWall(x,y)) cell.classList.add("wall");
-        if (level[y][x]==="G") cell.classList.add("goal");
-        if (level[y][x]==="S") cell.classList.add("switch");
-        if (level[y][x]==="D") cell.classList.add(gateOpen?"gate-open":"gate");
-        const moving=movingAt(movingTrack,movingPhase);if(moving&&moving.x===x&&moving.y===y)cell.classList.add("moving-wall");
-        if (box.x===x && box.y===y) { const block=document.createElement("span"); block.className="box"; block.setAttribute("aria-label","wooden block"); cell.append(block); }
-        if (player.x===x && player.y===y) { const buddy=document.createElement("span"); buddy.className="player"+(level[y][x]==="G"?" on-goal":""); buddy.setAttribute("aria-label","player"); applyBuddyStyle(buddy); cell.append(buddy); }
-        board.append(cell);
+      const rows=level.length,columns=level[0].length,layoutKey=`${levelIndex}:${rows}:${columns}`;
+      if(layoutKey!==boardLayoutKey){
+        board.replaceChildren();boardCells=[];boardLayoutKey=layoutKey;
+        board.style.gridTemplateColumns=`repeat(${columns},minmax(0,1fr))`;
+        for(let y=0;y<rows;y++)for(let x=0;x<columns;x++){
+          const cell=document.createElement("div");cell.className="cell";cell.setAttribute("role","gridcell");
+          if(level[y][x]==="G")cell.classList.add("goal");
+          if(level[y][x]==="S")cell.classList.add("switch");
+          boardCells.push(cell);board.append(cell);
+        }
+        boxToken=document.createElement("span");boxToken.className="box";boxToken.setAttribute("aria-label","wooden block");
+        playerToken=document.createElement("span");playerToken.className="player";playerToken.setAttribute("aria-label","player");
+        renderedBuddyStyle="";
       }
+      const styleKey=JSON.stringify(buddyStyle);
+      if(renderedBuddyStyle!==styleKey){applyBuddyStyle(playerToken);renderedBuddyStyle=styleKey;}
+      const moving=movingAt(movingTrack,movingPhase);
+      for(let y=0;y<rows;y++)for(let x=0;x<columns;x++){
+        const cell=boardCells[y*columns+x],positionKey=`${x},${y}`;
+        cell.classList.toggle("wall",isWall(x,y));
+        cell.classList.toggle("gate",level[y][x]==="D"&&!gateOpen);
+        cell.classList.toggle("gate-open",level[y][x]==="D"&&gateOpen);
+        cell.classList.toggle("moving-wall",!!moving&&moving.x===x&&moving.y===y);
+        cell.classList.toggle("trail-player",replayTrailActive&&replayPlayerTrail.has(positionKey));
+        cell.classList.toggle("trail-box",replayTrailActive&&replayBoxTrail.has(positionKey));
+      }
+      const boxCell=boardCells[box.y*columns+box.x],playerCell=boardCells[player.y*columns+player.x];
+      if(boxToken.parentElement!==boxCell)boxCell.append(boxToken);
+      if(playerToken.parentElement!==playerCell)playerCell.append(playerToken);
+      playerToken.classList.toggle("on-goal",level[player.y][player.x]==="G");
       board.classList.toggle("is-won",won); board.classList.toggle("box-pushed",pushed);
       movesLabel.textContent=`Moves: ${moves}`;
       record.textContent=`Fastest: ${fastestMoves??"—"} moves`;
@@ -967,8 +981,19 @@
       const direction=directions[event.key]||directions[event.key.toLowerCase()];
       if (direction) { event.preventDefault(); move(...direction); }
     });
-    document.querySelectorAll("[data-dir]").forEach(button=>button.addEventListener("click",()=>{
-      const dirs={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}; move(...dirs[button.dataset.dir]);
+    function bindTouchMove(button,action) {
+      let lastTouchMove=0;
+      button.addEventListener("pointerdown",event=>{
+        if(event.pointerType!=="touch"&&event.pointerType!=="pen")return;
+        event.preventDefault();lastTouchMove=Date.now();action();
+      },{passive:false});
+      button.addEventListener("click",()=>{
+        if(Date.now()-lastTouchMove<800)return;
+        action();
+      });
+    }
+    document.querySelectorAll("[data-dir]").forEach(button=>bindTouchMove(button,()=>{
+      const dirs={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};move(...dirs[button.dataset.dir]);
     }));
     document.querySelectorAll(".difficulty").forEach(button=>button.addEventListener("click",()=>chooseDifficulty(Number(button.dataset.level))));
     resetButton.addEventListener("click",startOver);
@@ -983,7 +1008,7 @@
     document.querySelector("#tutorial-prev").addEventListener("click",()=>{if(tutorialStep>0){tutorialStep--;renderTutorialStep();}});
     document.querySelector("#tutorial-next").addEventListener("click",()=>{if(tutorialStep<3){tutorialStep++;renderTutorialStep();}else closeGuide();});
     document.querySelector("#tutorial-demo-reset").addEventListener("click",resetTutorialPuzzle);
-    document.querySelectorAll("[data-tutorial-dir]").forEach(button=>button.addEventListener("click",()=>{
+    document.querySelectorAll("[data-tutorial-dir]").forEach(button=>bindTouchMove(button,()=>{
       if(guideTab!=="tutorial"||tutorialStep!==3)return;
       const dirs={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};moveTutorial(...dirs[button.dataset.tutorialDir]);
     }));
