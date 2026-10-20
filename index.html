@@ -52,7 +52,7 @@
     .menu-help { width:100%; margin-top:8px; padding:8px; border:0; background:transparent; color:var(--muted); font-weight:750; cursor:pointer; }
     .menu-help:hover { color:var(--ink); text-decoration:underline; }
     .guide-backdrop { z-index:30; }
-    .guide-dialog { width:min(100%,760px); max-height:calc(100vh - 32px); overflow:auto; padding:clamp(20px,4vw,34px); text-align:left; }
+    .guide-dialog { width:min(100%,760px); max-height:calc(100vh - 32px); overflow:auto; padding:clamp(20px,4vw,34px); padding-bottom:16px; text-align:left; }
     .guide-header { display:flex; justify-content:space-between; align-items:flex-start; gap:18px; }
     .guide-header .eyebrow { margin-bottom:6px; }
     .guide-close { flex:none; width:38px; height:38px; border:1px solid var(--line); border-radius:50%; background:#fff; cursor:pointer; }
@@ -78,7 +78,7 @@
     .demo-gate { background:#bd9a62; color:#fff8e8; }
     .demo-moving { background:#c56d72; color:#fff; }
     .guide-note { margin-top:12px !important; padding:10px 12px; border-radius:12px; background:#f4f6fa; }
-    .tutorial-intro { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:15px; }
+    .tutorial-intro { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; }
     .tutorial-step-count { color:#9a7c47; font-size:.76rem; font-weight:850; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; }
     .tutorial-step { display:grid; grid-template-columns:minmax(150px,.7fr) minmax(0,1.3fr); align-items:center; gap:18px; min-height:170px; }
     .tutorial-art { display:grid; place-items:center; min-height:145px; border:1px solid #e4e8ef; border-radius:17px; background:radial-gradient(circle at 50% 40%,#fff,#edf0f5 80%); }
@@ -100,7 +100,7 @@
     .tutorial-controls button:nth-child(4) { grid-column:3; grid-row:2; }
     .tutorial-demo-status { min-height:1.4em; color:#4c6c58 !important; font-weight:750; }
     .tutorial-demo-reset { width:max-content; padding:6px 10px; border:1px solid var(--line); border-radius:9px; background:#fff; font-size:.8rem; font-weight:750; cursor:pointer; }
-    .tutorial-actions { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:16px; padding-top:13px; border-top:1px solid var(--line); }
+    .tutorial-actions { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px; padding-top:9px; border-top:1px solid var(--line); }
     .tutorial-actions-right { display:flex; gap:8px; }
     @media (max-width:620px) { .howto-cards { grid-template-columns:1fr; } .howto-visual { min-height:68px; margin-bottom:8px; } .tutorial-step,.tutorial-practice { grid-template-columns:1fr; gap:10px; } .tutorial-art { min-height:100px; } .tutorial-practice { justify-items:center; } .tutorial-practice-copy { justify-items:center; text-align:center; } .tutorial-actions { flex-wrap:wrap; } }
     .menu-customize-card { display:flex; width:100%; align-items:center; gap:12px; margin:13px 0 10px; padding:12px 14px; border:1px solid #e5dcc8; border-radius:16px; background:linear-gradient(110deg,#fffefa,#f3efe5); text-align:left; cursor:pointer; transition:transform .18s,border-color .18s,box-shadow .18s; }
@@ -302,7 +302,7 @@
         <button id="tutorial-return" class="action" type="button" hidden>Back to tutorial</button>
       </div>
       <div id="guide-tutorial" class="guide-panel" aria-labelledby="guide-title" hidden>
-        <div class="tutorial-intro"><p id="tutorial-step-count" class="tutorial-step-count">Step 1 of 4</p><p>Learn the basics, then try a tiny puzzle.</p></div>
+        <div class="tutorial-intro"><p id="tutorial-step-count" class="tutorial-step-count">Step 1 of 4</p></div>
         <div class="tutorial-step" data-tutorial-step="0">
           <div class="tutorial-art" aria-hidden="true"><div class="howto-visual"><div class="demo-keys"><span>W</span><span>A</span><span>S</span><span>D</span></div><span class="demo-buddy">•ᴗ•</span></div></div>
           <div><h3>Move one square at a time</h3><p>Use arrow keys or W A S D on a keyboard. On a phone or tablet, tap the on-screen arrow pad below the board.</p></div>
