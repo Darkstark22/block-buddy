@@ -31,6 +31,8 @@
     .menu-dialog { position:relative; width:min(100%,455px); max-height:calc(100vh - 40px); overflow:hidden; padding:30px; border:1px solid #e7dfcf; border-radius:25px; background:linear-gradient(145deg,#fffefa,#f8f6ef); box-shadow:0 28px 90px #11182755; text-align:center; animation:menu-in .22s ease-out; }
     .menu-confetti { position:absolute; z-index:2; inset:0; overflow:hidden; pointer-events:none; }
     .menu-confetti span { position:absolute; top:-12px; left:var(--x); width:7px; height:10px; border-radius:2px; background:hsl(var(--h) 72% 60%); animation:menu-confetti-fall 1.7s ease-out var(--d) forwards; }
+    .menu-dialog.is-celebrating::before { position:absolute; z-index:0; top:-90px; left:50%; width:280px; height:280px; border-radius:50%; content:""; background:radial-gradient(circle,#f2d38c8c 0,#f2d38c30 42%,transparent 72%); transform:translateX(-50%); pointer-events:none; animation:celebration-flash 1.25s ease-out both; }
+    .menu-dialog.is-celebrating #menu-title { animation:congrats-pop .55s cubic-bezier(.2,.85,.25,1.25) both; }
     .menu-dialog h2 { margin:0; color:#263143; font-family:Georgia,"Times New Roman",serif; font-size:2rem; font-weight:500; letter-spacing:-.045em; }
     .menu-dialog .eyebrow { color:#987b49; }
     .menu-copy { margin:8px 0 19px; color:var(--muted); font-size:.91rem; }
@@ -230,6 +232,8 @@
     @keyframes star-pop { 45% { transform:scale(1.55) rotate(20deg); } }
     @keyframes confetti-fall { 0% { opacity:0; transform:translateY(0) rotate(0); } 15% { opacity:1; } 100% { opacity:0; transform:translateY(115px) rotate(240deg); } }
     @keyframes menu-confetti-fall { 0% { opacity:0; transform:translateY(0) rotate(0); } 12% { opacity:1; } 100% { opacity:0; transform:translateY(430px) rotate(520deg); } }
+    @keyframes celebration-flash { 0% { opacity:0; scale:.58; } 24% { opacity:1; } 100% { opacity:0; scale:1.38; } }
+    @keyframes congrats-pop { 0% { opacity:0; transform:translateY(9px) scale(.82); } 70% { opacity:1; transform:translateY(0) scale(1.07); } 100% { transform:scale(1); } }
     @media (max-width:599px) {
       .card { padding:12px; border-radius:20px; }
       .board-wrap { width:min(100%,390px,44dvh); }
@@ -729,7 +733,9 @@
     }
     function celebrateMenu() {
       const layer=document.querySelector("#menu-confetti");layer.replaceChildren();
-      for(let i=0;i<32;i++){
+      const dialog=document.querySelector("#level-menu .menu-dialog");
+      dialog.classList.remove("is-celebrating");void dialog.offsetWidth;dialog.classList.add("is-celebrating");
+      for(let i=0;i<48;i++){
         const bit=document.createElement("span");bit.style.setProperty("--x",`${Math.random()*100}%`);bit.style.setProperty("--h",`${25+Math.random()*225}`);bit.style.setProperty("--d",`${Math.random()*.45}s`);layer.append(bit);
       }
     }
@@ -764,7 +770,7 @@
       resetButton.disabled=finishingDifficulty;
       render(); celebrate(); winSound();
       if(finishingDifficulty){showDifficultyPicker(entry.difficulty);levelMenu.hidden=false;}
-      else setTimeout(()=>{if(levelIndex===entry.difficulty*5+entry.course&&won&&!reviewMode&&!practiceMode&&levelMenu.hidden){levelIndex++;start();}},1300);
+      else {showDifficultyPicker(null,{difficulty:entry.difficulty,course:entry.course,detail});levelMenu.hidden=false;}
     }
     function move(dx,dy) {
       if (won||reviewMode||replayTimer) return;
@@ -784,7 +790,7 @@
       else {
         saveDailyProgress();
         if(!openedNow)status.textContent=wallBlocked?"The moving wall pauses when you occupy its path.":pushing?"Nice push!":"Keep going!";
-        playTone(pushing?185:330,.055,0,.012); render(pushing);
+        playTone(pushing?185:330,.055,0,.018); render(pushing);
       }
     }
     showStreak(readStreak());
@@ -857,16 +863,16 @@
       guideReturnToMenu=false;
       document.querySelector(!levelMenu.hidden?"#menu-help":"#menu-open").focus();
     }
-    function showDifficultyPicker(completedNow=null) {
+    function showDifficultyPicker(completedNow=null,courseComplete=null) {
       if(dailyState?.date!==localDateKey())dailyState=null;
       const active=dailyState,finalCourse=completedNow!==null;
       applyBuddyStyle(document.querySelector("#menu-buddy-preview"));
       difficultyList.hidden=false;
-      menuTitle.textContent=finalCourse?"Congratulations!":active?.completed?"Difficulty complete!":active?"Keep going!":"Choose your difficulty";
-      menuCopy.textContent=finalCourse?`${difficulties[completedNow]} complete — all five courses cleared. Choose another difficulty or replay any course whenever you like.`:active?.completed?`All five ${difficulties[active.difficulty]} courses are complete. Choose another difficulty or replay any course whenever you like.`:active?`${difficulties[active.difficulty]} · Course ${active.course+1} of 5. Continue your current course, or choose another course to practice.`:"";
+      menuTitle.textContent=finalCourse||courseComplete?"Congratulations!":active?.completed?"Difficulty complete!":active?"Keep going!":"Choose your difficulty";
+      menuCopy.textContent=finalCourse?`${difficulties[completedNow]} complete — all five courses cleared. Choose another difficulty or replay any course whenever you like.`:courseComplete?`${difficulties[courseComplete.difficulty]} · Course ${courseComplete.course+1} of 5 complete. ${courseComplete.detail} Continue when you’re ready for the next course.`:active?.completed?`All five ${difficulties[active.difficulty]} courses are complete. Choose another difficulty or replay any course whenever you like.`:active?`${difficulties[active.difficulty]} · Course ${active.course+1} of 5. Continue your current course, or choose another course to practice.`:"";
       menuCopy.hidden=!menuCopy.textContent;
       continueButton.hidden=!(active&&!active.completed);
-      continueButton.textContent="Continue today's puzzle";
+      continueButton.textContent=courseComplete?`Continue to course ${courseComplete.course+2}`:"Continue today's puzzle";
       const completed=completedDifficulties();
       document.querySelectorAll(".difficulty").forEach(button=>{
         const index=Number(button.dataset.level),done=completed.includes(index);
@@ -876,7 +882,7 @@
         button.setAttribute("aria-label",done?`${difficulties[index]}, completed`:difficulties[index]);
         button.disabled=false;
       });
-      if(finalCourse)celebrateMenu();else document.querySelector("#menu-confetti").replaceChildren();
+      if(finalCourse||courseComplete)celebrateMenu();else {document.querySelector("#menu-confetti").replaceChildren();document.querySelector("#level-menu .menu-dialog").classList.remove("is-celebrating");}
     }
     function openCourse(difficulty,course) {
       levelIndex=difficulty*5+course;
