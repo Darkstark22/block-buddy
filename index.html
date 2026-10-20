@@ -805,9 +805,8 @@
       render(); celebrate(); winSound();
       setTimeout(()=>{
         if(levelIndex!==entry.difficulty*5+entry.course||!won||reviewMode||practiceMode)return;
-        if(finishingDifficulty)showDifficultyPicker(entry.difficulty);
-        else showDifficultyPicker(null,{difficulty:entry.difficulty,course:entry.course,detail});
-        levelMenu.hidden=false;
+        if(finishingDifficulty){showDifficultyPicker(entry.difficulty);levelMenu.hidden=false;}
+        else {levelIndex=entry.difficulty*5+entry.course+1;practiceMode=false;reviewMode=false;reviewSnapshot=null;start();}
       },650);
     }
     function move(dx,dy) {
