@@ -92,19 +92,11 @@
     .tutorial-face-eyes { position:absolute; top:31%; left:25%; display:flex; width:50%; justify-content:space-between; }
     .tutorial-face-eyes i { width:3px; height:5px; border-radius:50%; background:#253047; }
     .tutorial-face-mouth { position:absolute; top:53%; left:37%; width:26%; height:17%; border-bottom:2px solid #253047; border-radius:0 0 50% 50%; }
-    .tutorial-goodluck { position:relative; display:grid; min-height:210px; place-items:center; align-content:center; gap:10px; overflow:hidden; padding:14px; border:1px solid #dce5fa; border-radius:18px; background:radial-gradient(circle at 50% 35%,#fff 0,#f5f8ff 72%); text-align:center; }
-    .tutorial-goodluck::before { position:absolute; inset:12px; border:1px dashed #dce5fa; border-radius:13px; content:""; pointer-events:none; }
-    .tutorial-goodluck-buddy { position:relative; z-index:1; display:block; width:104px; height:104px; border:5px solid #6387db; border-radius:50%; background:radial-gradient(circle at 32% 23%,#fff 0,#edf2ff 45%,#dbe5ff 100%); box-shadow:inset 0 -6px 10px #6387db20,0 10px 24px #6387db30; animation:tutorial-buddy-bob 1.5s ease-in-out infinite; }
-    .tutorial-goodluck-buddy .tutorial-face-eyes { top:31%; }
-    .tutorial-goodluck-buddy .tutorial-face-eyes i { width:8px; height:11px; }
-    .tutorial-goodluck-buddy .tutorial-face-mouth { top:53%; left:34%; width:32%; height:22%; border-bottom-width:5px; }
-    .tutorial-goodluck-copy { position:relative; z-index:1; display:grid; gap:3px; text-align:center; }
-    .tutorial-goodluck-copy strong { color:#30456d; font-size:1.15rem; letter-spacing:-.02em; }
-    .tutorial-goodluck-copy span { color:#68758c; font-size:.8rem; line-height:1.35; }
-    @keyframes tutorial-buddy-bob { 0%,100% { transform:translateY(2px) rotate(-3deg); } 50% { transform:translateY(-4px) rotate(3deg); } }
-    @media (prefers-reduced-motion:reduce) { .tutorial-goodluck-buddy { animation:none; } }
     .tutorial-box-token { width:68%; height:68%; border-radius:5px; background:#c5a56d; box-shadow:inset 0 -3px #cc9147; }
-    .tutorial-practice-copy { display:grid; gap:10px; }
+    .tutorial-practice-copy { display:grid; min-height:230px; align-content:space-between; justify-items:center; gap:9px; padding:15px; border:1px solid #dce5fa; border-radius:17px; background:linear-gradient(145deg,#f7f9ff,#fff); text-align:center; }
+    .tutorial-practice-copy h3 { margin:0 0 3px; color:#30456d; font-size:1.05rem; }
+    .tutorial-practice-copy p { margin:0; color:var(--muted); font-size:.82rem; }
+    .tutorial-goodluck { color:#9a7c47; font-size:.73rem; font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
     .tutorial-controls { display:grid; grid-template-columns:repeat(3,48px); grid-template-rows:repeat(2,46px); gap:5px; width:max-content; touch-action:manipulation; }
     .tutorial-controls button { padding:0; border:1px solid var(--line); border-radius:11px; background:#fff; color:#354054; font-size:1.2rem; font-weight:850; cursor:pointer; box-shadow:0 2px 0 #dfe3ea; }
     .tutorial-controls button:active { transform:translateY(1px); box-shadow:0 1px 0 #dfe3ea; }
@@ -116,7 +108,7 @@
     .tutorial-demo-reset { width:max-content; padding:6px 10px; border:1px solid var(--line); border-radius:9px; background:#fff; font-size:.8rem; font-weight:750; cursor:pointer; }
     .tutorial-actions { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px; padding-top:9px; border-top:1px solid var(--line); }
     .tutorial-actions-right { display:flex; gap:8px; }
-    @media (max-width:620px) { .howto-cards { grid-template-columns:1fr; } .howto-visual { min-height:68px; margin-bottom:8px; } .tutorial-step,.tutorial-practice { grid-template-columns:1fr; gap:10px; } .tutorial-art { min-height:100px; } .tutorial-practice { justify-items:center; } .tutorial-practice-copy { justify-items:center; text-align:center; } .tutorial-actions { flex-wrap:wrap; } }
+    @media (max-width:620px) { .howto-cards { grid-template-columns:1fr; } .howto-visual { min-height:68px; margin-bottom:8px; } .tutorial-step,.tutorial-practice { grid-template-columns:1fr; gap:10px; } .tutorial-art { min-height:100px; } .tutorial-practice { justify-items:center; } .tutorial-practice-copy { width:min(100%,300px); min-height:220px; justify-items:center; text-align:center; } .tutorial-actions { flex-wrap:wrap; } }
     .menu-customize-card { display:flex; width:100%; align-items:center; gap:12px; margin:13px 0 10px; padding:12px 14px; border:1px solid #e5dcc8; border-radius:16px; background:linear-gradient(110deg,#fffefa,#f3efe5); text-align:left; cursor:pointer; transition:transform .18s,border-color .18s,box-shadow .18s; }
     .menu-customize-card:hover { transform:translateY(-1px); border-color:#c5a56d; box-shadow:0 8px 22px #88714512; }
     .player.menu-buddy-preview { flex:none; width:38px; height:38px; border-width:3px; }
@@ -333,10 +325,7 @@
           <div class="tutorial-practice">
             <div id="tutorial-board" class="tutorial-board" role="grid" aria-label="Mini practice puzzle"></div>
             <div class="tutorial-practice-copy">
-              <div class="tutorial-goodluck" role="note" aria-label="Good luck">
-                <span class="tutorial-goodluck-buddy" aria-hidden="true"><span class="tutorial-face-eyes"><i></i><i></i></span><span class="tutorial-face-mouth"></span></span>
-                <span class="tutorial-goodluck-copy"><strong>You’ve got this!</strong><span>Push the block right onto the star. Your buddy is cheering you on!</span></span>
-              </div>
+              <div><span class="tutorial-goodluck">Good luck · You’ve got this</span><h3>Your turn</h3><p>Push the block right onto the star.</p></div>
               <div class="tutorial-controls" role="group" aria-label="Tap these arrows to move your buddy">
                 <button type="button" data-tutorial-dir="up" aria-label="Practice move up">↑</button><button type="button" data-tutorial-dir="left" aria-label="Practice move left">←</button><button type="button" data-tutorial-dir="down" aria-label="Practice move down">↓</button><button type="button" data-tutorial-dir="right" aria-label="Practice move right">→</button>
               </div>
