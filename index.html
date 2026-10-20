@@ -472,9 +472,21 @@
     let audioContext;
     mobileControls.classList.toggle("touch-enabled","ontouchstart" in window||navigator.maxTouchPoints>0);
 
+    const ontarioDateFormatter=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Toronto",year:"numeric",month:"2-digit",day:"2-digit"});
     function localDateKey(date = new Date()) {
-      return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+      const parts=Object.fromEntries(ontarioDateFormatter.formatToParts(date).map(part=>[part.type,part.value]));
+      return `${parts.year}-${parts.month}-${parts.day}`;
     }
+    function millisecondsToOntarioMidnight(now=new Date()) {
+      const today=localDateKey(now);let low=now.getTime(),high=low+26*60*60*1000;
+      while(high-low>1000){const middle=Math.floor((low+high)/2);if(localDateKey(new Date(middle))===today)low=middle;else high=middle;}
+      return Math.max(1000,high-now.getTime());
+    }
+    const pageOntarioDate=localDateKey();
+    setTimeout(()=>window.location.reload(),millisecondsToOntarioMidnight()+500);
+    const reloadForOntarioDayChange=()=>{if(localDateKey()!==pageOntarioDate)window.location.reload();};
+    window.addEventListener("focus",reloadForOntarioDayChange);
+    document.addEventListener("visibilitychange",()=>{if(!document.hidden)reloadForOntarioDayChange();});
     function readTodayDaily() {
       try {
         const saved=JSON.parse(getSaved("blockBuddyDaily")||"null");
@@ -811,7 +823,7 @@
       const finishingDifficulty=entry.course===4;
       if(finishingDifficulty){
         dailyState={date:localDateKey(),difficulty:entry.difficulty,course:entry.course,completed:true,moves,player:{...player},box:{...box},gateOpen,movingPhase,history:cloneMoveHistory(moveHistory),historyComplete};
-        const completed=completedDifficulties();if(!completed.includes(entry.difficulty))completed.push(entry.difficulty);saveValue("blockBuddyCompleted",JSON.stringify(completed));
+        const completed=completedDifficulties();if(!completed.includes(entry.difficulty))completed.push(entry.difficulty);saveValue("blockBuddyCompleted",JSON.stringify({date:localDateKey(),levels:completed}));
         status.textContent=`${entry.name} complete! All five courses cleared. ${detail}`;
       }else{
         dailyState={date:localDateKey(),difficulty:entry.difficulty,course:entry.course+1,completed:false};
@@ -856,8 +868,11 @@
       soundIcon.textContent=soundOn?"🔊":"🔇";
     }
     function completedDifficulties() {
-      try { return JSON.parse(getSaved("blockBuddyCompleted")||"[]").filter(n=>Number.isInteger(n)&&n>=0&&n<4); }
-      catch { return []; }
+      try {
+        const saved=JSON.parse(getSaved("blockBuddyCompleted")||"null");
+        if(saved?.date!==localDateKey()||!Array.isArray(saved.levels))return [];
+        return saved.levels.filter(n=>Number.isInteger(n)&&n>=0&&n<4);
+      } catch { return []; }
     }
     function resetTutorialPuzzle() {
       tutorialPlayer={x:1,y:2};tutorialBox={x:2,y:2};tutorialMoves=0;tutorialWon=false;
@@ -961,8 +976,7 @@
       startNextDifficulty(difficulty);
     }
     function startNextDifficulty(difficulty) {
-      const course=nextUnfinishedCourse(difficulty);
-      if(course<0){openCourse(difficulty,0);return;}
+      const course=0;
       levelIndex=difficulty*5+course;practiceMode=false;reviewMode=false;reviewSnapshot=null;dailyState={date:localDateKey(),difficulty,course,completed:false};
       saveValue("blockBuddyDaily",JSON.stringify(dailyState));hasStarted=true;start();closeMenu();
     }
