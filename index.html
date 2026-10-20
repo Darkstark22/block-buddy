@@ -30,7 +30,7 @@
     .menu-backdrop { position:fixed; z-index:15; inset:0; display:grid; place-items:center; overflow:auto; padding:20px; background:#27304472; backdrop-filter:blur(5px); }
     .menu-dialog { position:relative; width:min(100%,455px); max-height:calc(100vh - 40px); overflow:hidden; padding:30px; border:1px solid #e7dfcf; border-radius:25px; background:linear-gradient(145deg,#fffefa,#f8f6ef); box-shadow:0 28px 90px #11182755; text-align:center; animation:menu-in .22s ease-out; }
     .menu-confetti { position:absolute; z-index:2; inset:0; overflow:hidden; pointer-events:none; }
-    .menu-confetti span { position:absolute; top:-12px; left:var(--x); width:7px; height:10px; border-radius:2px; background:hsl(var(--h) 72% 60%); animation:menu-confetti-fall 1.7s ease-out var(--d) forwards; }
+    .menu-confetti span { position:absolute; top:var(--y); left:var(--x); width:7px; height:10px; border-radius:2px; background:hsl(var(--h) 72% 60%); animation:confetti-burst 1.05s ease-out var(--d) forwards; }
     .menu-dialog.is-celebrating::before { position:absolute; z-index:0; top:-90px; left:50%; width:280px; height:280px; border-radius:50%; content:""; background:radial-gradient(circle,#f2d38c8c 0,#f2d38c30 42%,transparent 72%); transform:translateX(-50%); pointer-events:none; animation:celebration-flash 1.25s ease-out both; }
     .menu-dialog.is-celebrating #menu-title { animation:congrats-pop .55s cubic-bezier(.2,.85,.25,1.25) both; }
     .menu-dialog h2 { margin:0; color:#263143; font-family:Georgia,"Times New Roman",serif; font-size:2rem; font-weight:500; letter-spacing:-.045em; }
@@ -206,7 +206,7 @@
     .box-pushed .box { animation:bump .18s ease-out; }
     .is-won .goal::after { color:#e2ae43; transform:scale(1.28) rotate(12deg); animation:star-pop .5s ease-out; }
     .celebration { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
-    .confetti { position:absolute; left:var(--x); top:45%; width:8px; height:11px; border-radius:2px; background:hsl(var(--h) 75% 62%); opacity:0; animation:confetti-fall .9s ease-out var(--d) forwards; }
+    .confetti { position:absolute; left:var(--x); top:var(--y); width:8px; height:11px; border-radius:2px; background:hsl(var(--h) 75% 62%); opacity:0; animation:confetti-burst 1.25s cubic-bezier(.16,.72,.24,1) var(--d) forwards; }
     .status { min-height:1.6em; margin:14px 0 0; font-weight:750; }
     .status.win { color:#377a4f; }
     .controls { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:15px; }
@@ -230,8 +230,7 @@
     @keyframes wall-glow { to { filter:brightness(1.16); } }
     @keyframes menu-in { from { opacity:0; transform:translateY(8px) scale(.98); } to { opacity:1; transform:translateY(0) scale(1); } }
     @keyframes star-pop { 45% { transform:scale(1.55) rotate(20deg); } }
-    @keyframes confetti-fall { 0% { opacity:0; transform:translateY(0) rotate(0); } 15% { opacity:1; } 100% { opacity:0; transform:translateY(115px) rotate(240deg); } }
-    @keyframes menu-confetti-fall { 0% { opacity:0; transform:translateY(0) rotate(0); } 12% { opacity:1; } 100% { opacity:0; transform:translateY(430px) rotate(520deg); } }
+    @keyframes confetti-burst { 0% { opacity:0; transform:translate(-50%,-50%) scale(.25) rotate(0); } 13% { opacity:1; } 100% { opacity:0; transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.72) rotate(var(--rot)); } }
     @keyframes celebration-flash { 0% { opacity:0; scale:.58; } 24% { opacity:1; } 100% { opacity:0; scale:1.38; } }
     @keyframes congrats-pop { 0% { opacity:0; transform:translateY(9px) scale(.82); } 70% { opacity:1; transform:translateY(0) scale(1.07); } 100% { transform:scale(1); } }
     @media (max-width:599px) {
@@ -725,9 +724,18 @@
     }
     function celebrate() {
       const layer=document.querySelector("#celebration"); layer.replaceChildren();
-      for (let i=0;i<18;i++) {
+      const layerRect=layer.getBoundingClientRect();
+      const goalCell=board.children[box.y*level[0].length+box.x];
+      const goalRect=goalCell?.getBoundingClientRect();
+      const originX=goalRect?goalRect.left+goalRect.width/2-layerRect.left:layerRect.width/2;
+      const originY=goalRect?goalRect.top+goalRect.height/2-layerRect.top:layerRect.height/2;
+      const maxRadius=Math.min(140,Math.min(layerRect.width,layerRect.height)*.58);
+      for (let i=0;i<36;i++) {
         const bit=document.createElement("span"); bit.className="confetti";
-        bit.style.setProperty("--x",`${8+Math.random()*84}%`); bit.style.setProperty("--h",`${35+Math.random()*210}`); bit.style.setProperty("--d",`${Math.random()*.2}s`);
+        const angle=(i+Math.random()*.55)/36*Math.PI*2,radius=34+Math.random()*maxRadius;
+        bit.style.setProperty("--x",`${originX}px`);bit.style.setProperty("--y",`${originY}px`);
+        bit.style.setProperty("--dx",`${Math.cos(angle)*radius}px`);bit.style.setProperty("--dy",`${Math.sin(angle)*radius}px`);
+        bit.style.setProperty("--rot",`${180+Math.random()*540}deg`);bit.style.setProperty("--h",`${35+Math.random()*210}`);bit.style.setProperty("--d",`${Math.random()*.08}s`);
         layer.append(bit);
       }
     }
@@ -735,8 +743,13 @@
       const layer=document.querySelector("#menu-confetti");layer.replaceChildren();
       const dialog=document.querySelector("#level-menu .menu-dialog");
       dialog.classList.remove("is-celebrating");void dialog.offsetWidth;dialog.classList.add("is-celebrating");
+      const bounds=layer.getBoundingClientRect(),originX=bounds.width/2,originY=bounds.height*.31;
+      const maxRadius=Math.min(210,Math.max(70,Math.min(bounds.width,bounds.height)*.7));
       for(let i=0;i<48;i++){
-        const bit=document.createElement("span");bit.style.setProperty("--x",`${Math.random()*100}%`);bit.style.setProperty("--h",`${25+Math.random()*225}`);bit.style.setProperty("--d",`${Math.random()*.45}s`);layer.append(bit);
+        const bit=document.createElement("span"),angle=(i+Math.random()*.6)/48*Math.PI*2,radius=35+Math.random()*maxRadius;
+        bit.style.setProperty("--x",`${originX}px`);bit.style.setProperty("--y",`${originY}px`);
+        bit.style.setProperty("--dx",`${Math.cos(angle)*radius}px`);bit.style.setProperty("--dy",`${Math.sin(angle)*radius}px`);
+        bit.style.setProperty("--rot",`${180+Math.random()*540}deg`);bit.style.setProperty("--h",`${25+Math.random()*225}`);bit.style.setProperty("--d",`${Math.random()*.12}s`);layer.append(bit);
       }
     }
     function finishLevel() {
@@ -769,8 +782,12 @@
       saveValue("blockBuddyDaily",JSON.stringify(dailyState));
       resetButton.disabled=finishingDifficulty;
       render(); celebrate(); winSound();
-      if(finishingDifficulty){showDifficultyPicker(entry.difficulty);levelMenu.hidden=false;}
-      else {showDifficultyPicker(null,{difficulty:entry.difficulty,course:entry.course,detail});levelMenu.hidden=false;}
+      setTimeout(()=>{
+        if(levelIndex!==entry.difficulty*5+entry.course||!won||reviewMode||practiceMode)return;
+        if(finishingDifficulty)showDifficultyPicker(entry.difficulty);
+        else showDifficultyPicker(null,{difficulty:entry.difficulty,course:entry.course,detail});
+        levelMenu.hidden=false;
+      },650);
     }
     function move(dx,dy) {
       if (won||reviewMode||replayTimer) return;
