@@ -174,6 +174,7 @@
     .player[data-design="stripes"] { background-image:repeating-linear-gradient(135deg,transparent 0 6px,#ffffff80 6px 9px); }
     .player[data-design="sparkle"] { background-image:radial-gradient(circle at 26% 28%,#ffffffed 0 5%,transparent 7%),radial-gradient(circle at 74% 72%,#ffffffb5 0 6%,transparent 8%); }
     .player .buddy-face { position:relative; z-index:1; display:block; color:#253047; font-size:clamp(7px,1.65vw,12px); font-weight:950; line-height:1; white-space:nowrap; }
+    .player .buddy-face-svg { position:relative; z-index:2; display:block; flex:none; width:82%; height:82%; overflow:visible; pointer-events:none; }
     .shop-swatch .buddy-face { font-size:8px; }
     .card { padding:clamp(14px,4vw,25px); border:1px solid var(--line); border-radius:25px; background:#fff; box-shadow:0 16px 48px #393a2b10; }
     .level-top { display:flex; justify-content:space-between; align-items:center; gap:12px; max-width:390px; min-height:26px; margin:0 auto 10px; }
@@ -203,12 +204,14 @@
     .gate::after { content:"▥"; color:#fff8e8; font-size:clamp(1rem,3.5vw,1.4rem); }
     .gate-open { background:#e9f4eb; }
     .gate-open::after { content:"✓"; color:#60a879; }
+    .gate::after,.gate-open::after { position:absolute; inset:0; display:grid; place-items:center; border:0; border-radius:0; }
     .moving-wall { z-index:2; background:#c56d72; box-shadow:inset 0 -4px #984d56; animation:wall-glow .8s ease-in-out infinite alternate; }
     .moving-wall::after { content:"↔"; color:#fff; font-size:clamp(1rem,3.5vw,1.4rem); }
+    .moving-wall::after { position:absolute; inset:0; display:grid; place-items:center; border:0; border-radius:0; line-height:1; }
     .box { z-index:1; width:72%; height:72%; border-radius:8px; background:var(--gold); box-shadow:inset 0 -5px #cc9147; }
     .player { position:relative; z-index:1; display:grid; place-items:center; flex:none; min-width:0; aspect-ratio:1; width:62%; height:auto; overflow:hidden; border:clamp(3px,1vw,5px) solid var(--buddy-accent,var(--blue)); border-radius:50%; background-color:var(--buddy-fill,#e4ebfc); box-shadow:inset 0 0 0 3px #ffffffaa; }
     .player.on-goal { border-color:var(--green); background:#d8efdf; }
-    .is-won .goal::after { color:#e2ae43; transform:scale(1.28) rotate(12deg); animation:star-pop .5s ease-out; }
+    .is-won .goal::after { color:#e2ae43; }
     .celebration { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
     .confetti { position:absolute; left:var(--x); top:var(--y); width:8px; height:11px; border-radius:2px; background:hsl(var(--h) 75% 62%); opacity:0; animation:confetti-burst 1.25s cubic-bezier(.16,.72,.24,1) var(--d) forwards; }
     .status { min-height:1.6em; margin:14px 0 0; font-weight:750; }
@@ -232,7 +235,6 @@
     .fine-print { margin:14px auto 0; max-width:400px; color:#9097a4; font-size:.78rem; }
     @keyframes wall-glow { to { filter:brightness(1.16); } }
     @keyframes menu-in { from { opacity:0; transform:translateY(8px) scale(.98); } to { opacity:1; transform:translateY(0) scale(1); } }
-    @keyframes star-pop { 45% { transform:scale(1.55) rotate(20deg); } }
     @keyframes confetti-burst { 0% { opacity:0; transform:translate(-50%,-50%) scale(.25) rotate(0); } 13% { opacity:1; } 100% { opacity:0; transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.72) rotate(var(--rot)); } }
     @keyframes celebration-flash { 0% { opacity:0; scale:.58; } 24% { opacity:1; } 100% { opacity:0; scale:1.38; } }
     @keyframes congrats-pop { 0% { opacity:0; transform:translateY(9px) scale(.82); } 70% { opacity:1; transform:translateY(0) scale(1.07); } 100% { transform:scale(1); } }
@@ -590,7 +592,13 @@
       element.style.setProperty("--buddy-accent",color.accent);
       element.style.setProperty("--buddy-fill",color.fill);
       element.replaceChildren();
-      const face=document.createElement("span");face.className="buddy-face";face.textContent=findStyleItem("face",look.face).mark;element.append(face);
+      const faceStyle=findStyleItem("face",look.face);
+      if(faceStyle.id==="smile"){
+        const ns="http://www.w3.org/2000/svg",face=document.createElementNS(ns,"svg");
+        face.setAttribute("viewBox","0 0 100 100");face.setAttribute("aria-hidden","true");face.classList.add("buddy-face-svg");
+        for(const cx of [33,67]){const eye=document.createElementNS(ns,"circle");eye.setAttribute("cx",cx);eye.setAttribute("cy","40");eye.setAttribute("r","7");eye.setAttribute("fill","#253047");face.append(eye);}
+        const smile=document.createElementNS(ns,"path");smile.setAttribute("d","M29 57 Q50 80 71 57");smile.setAttribute("fill","none");smile.setAttribute("stroke","#253047");smile.setAttribute("stroke-width","7");smile.setAttribute("stroke-linecap","round");face.append(smile);element.append(face);
+      }else{const face=document.createElement("span");face.className="buddy-face";face.textContent=faceStyle.mark;element.append(face);}
     }
     function renderShop() {
       const best=bestStreak();
