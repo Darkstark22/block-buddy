@@ -226,6 +226,8 @@
     .action:focus-visible,.difficulty:focus-visible { outline:3px solid #94aefa; outline-offset:2px; }
     .mobile-controls { display:grid; grid-template-columns:repeat(3,48px); grid-template-rows:repeat(2,44px); gap:5px; justify-content:center; margin:10px auto 0; padding:8px 12px 10px; border:1px solid #e7eaf0; border-radius:16px; background:linear-gradient(145deg,#fafbfc,#f0f2f6); touch-action:none; user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent; }
     .mobile-controls button { min-width:44px; min-height:44px; padding:0; border:1px solid #e0e4eb; border-radius:12px; background:#fff; color:#394457; font-size:1.2rem; font-weight:850; box-shadow:0 2px 0 #e5e8ed; }
+    .mobile-controls button,.tutorial-controls button { touch-action:none; -webkit-touch-callout:none; }
+    .mobile-controls.touch-enabled { display:grid; }
     .mobile-controls button:active { transform:translateY(1px); background:#f5f0e5; box-shadow:0 1px 0 #e5e8ed; }
     .mobile-controls button:nth-child(1) { grid-column:2; }
     .mobile-controls button:nth-child(2) { grid-column:1; grid-row:2; }
@@ -441,6 +443,7 @@
       levels.push({difficulty,course,name:difficulties[difficulty],map:cells.map(row=>row.join("")),player:{x:px0+offset,y:py0+offset},box:{x:bx0+offset,y:by0+offset},switchPos,gatePos,track});
     }
     const board = document.querySelector("#board");
+    const mobileControls=document.querySelector(".mobile-controls");
     const status = document.querySelector("#status");
     const movesLabel = document.querySelector("#moves");
     const record = document.querySelector("#record");
@@ -466,6 +469,7 @@
     function saveValue(key,value) { try { localStorage.setItem(key,value); return true; } catch { return false; } }
     let soundOn = getSaved("blockBuddySound") !== "off";
     let audioContext;
+    mobileControls.classList.toggle("touch-enabled","ontouchstart" in window||navigator.maxTouchPoints>0);
 
     function localDateKey(date = new Date()) {
       return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
@@ -994,16 +998,14 @@
     });
     function bindTouchMove(button,action) {
       let lastTouchMove=0,lastDirectInput=0;
-      const fireTouch=event=>{
-        const now=Date.now();
-        if(now-lastDirectInput<80)return;
-        lastDirectInput=now;lastTouchMove=now;event.preventDefault();action();
-      };
-      button.addEventListener("pointerdown",event=>{
-        if(event.pointerType!=="touch"&&event.pointerType!=="pen")return;
-        fireTouch(event);
+      button.addEventListener("touchstart",event=>{
+        event.preventDefault();lastTouchMove=Date.now();action();
       },{passive:false});
-      button.addEventListener("touchstart",fireTouch,{passive:false});
+      button.addEventListener("pointerdown",event=>{
+        if(event.pointerType!=="pen")return;
+        const now=Date.now();if(now-lastDirectInput<80)return;
+        lastDirectInput=now;lastTouchMove=now;event.preventDefault();action();
+      },{passive:false});
       button.addEventListener("click",()=>{
         if(Date.now()-lastTouchMove<900)return;
         action();
