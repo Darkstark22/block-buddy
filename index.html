@@ -209,7 +209,8 @@
     .moving-wall { z-index:2; background:#c56d72; box-shadow:inset 0 -4px #984d56; animation:wall-glow .8s ease-in-out infinite alternate; }
     .moving-wall::after { content:"↔"; color:#fff; font-size:clamp(1rem,3.5vw,1.4rem); }
     .moving-wall::after { position:absolute; inset:0; display:grid; place-items:center; border:0; border-radius:0; line-height:1; }
-    .box { z-index:1; width:72%; height:72%; border-radius:8px; background:var(--gold); box-shadow:inset 0 -5px #cc9147; }
+    .box { z-index:1; width:72%; height:72%; border-radius:8px; background:var(--gold); box-shadow:inset 0 -5px #cc9147; transition:opacity .24s ease,transform .24s ease; }
+    .board.is-won:not(.replaying) .box { opacity:0; transform:scale(.6); }
     .player { position:relative; z-index:1; display:grid; place-items:center; flex:none; min-width:0; aspect-ratio:1; width:62%; height:auto; overflow:hidden; border:clamp(3px,1vw,5px) solid var(--buddy-accent,var(--blue)); border-radius:50%; background-color:var(--buddy-fill,#e4ebfc); box-shadow:inset 0 0 0 3px #ffffffaa; }
     .is-won .goal::after { color:#e2ae43; }
     .celebration { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
@@ -718,6 +719,7 @@
     }
     function stopReplay(showFinal=true) {
       if(replayTimer){clearInterval(replayTimer);replayTimer=null;}
+      board.classList.remove("replaying");
       const history=reviewMode?reviewSnapshot?.history:moveHistory;
       if(showFinal&&replayTrailActive&&history?.length>1){for(const step of history){replayPlayerTrail.add(`${step.player.x},${step.player.y}`);replayBoxTrail.add(`${step.box.x},${step.box.y}`);}applyMoveState(history[history.length-1]);}
       if(!showFinal){replayTrailActive=false;replayPlayerTrail.clear();replayBoxTrail.clear();}
@@ -727,11 +729,12 @@
       const history=reviewMode?reviewSnapshot?.history:moveHistory;
       if(replayTimer||!historyComplete||!history||history.length<2)return;
       const frames=cloneMoveHistory(history);let frame=0;
+      board.classList.add("replaying");
       replayTrailActive=true;replayPlayerTrail.clear();replayBoxTrail.clear();
       status.textContent=`Replaying the ${frames.length-1} moves…`;status.classList.remove("win");applyMoveState(frames[0],true);updateReplayControls();
       replayTimer=setInterval(()=>{
         frame++;applyMoveState(frames[frame],true);
-        if(frame>=frames.length-1){clearInterval(replayTimer);replayTimer=null;status.textContent="Replay complete — this is the path you took.";status.classList.add("win");updateReplayControls();}
+        if(frame>=frames.length-1){clearInterval(replayTimer);replayTimer=null;board.classList.remove("replaying");board.classList.add("is-won");status.textContent="Replay complete — course complete!";status.classList.add("win");celebrate();winSound();updateReplayControls();}
       },420);
       updateReplayControls();
     }
